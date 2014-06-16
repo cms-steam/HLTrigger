@@ -45373,9 +45373,9 @@ process.out=cms.EndPath(process.hltbitanalysis + process.hltbitanalysis2)
 process.source = cms.Source( "PoolSource",
                              skipBadFiles = cms.untracked.bool( True ),
                              fileNames = cms.untracked.vstring(
-    '/store/mc/Fall13dr/Electron_Pt-2to250_gun/AODSIM/tsg_PU40bx50_POSTLS162_V2-v1/00000/000D2BE0-E27E-E311-A75B-00266CF32A00.root'
+    '/store/mc/Fall13dr/QCD_Pt-30to50_Tune4C_13TeV_pythia8/GEN-SIM-RAW/castor_tsg_PU20bx25_POSTLS162_V2-v1/00000/004344B9-D16C-E311-9887-0025905A48FC.root'
     ),
-                             secondaryFileNames = cms.untracked.vstring('/store/mc/Fall13dr/Electron_Pt-2to250_gun/GEN-SIM-RAW/tsg_PU40bx50_POSTLS162_V2-v1/010000/9630A177-DA7E-E311-9620-00266CFFA7BC.root'),
+                             #secondaryFileNames = cms.untracked.vstring('/store/mc/Fall13dr/Electron_Pt-2to250_gun/GEN-SIM-RAW/tsg_PU40bx50_POSTLS162_V2-v1/010000/9630A177-DA7E-E311-9620-00266CFFA7BC.root'),
                              inputCommands = cms.untracked.vstring(
     'keep *'
     )
