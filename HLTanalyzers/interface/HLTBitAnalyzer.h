@@ -74,12 +74,30 @@ private:
   edm::InputTag VertexTagOffline0_;
   edm::InputTag pileupInfo_;
 
+  edm::EDGetTokenT<edm::TriggerResults>                  hltresultsToken_;
+  edm::EDGetTokenT<GenEventInfoProduct>                  genEventInfoToken_;
+  edm::EDGetTokenT<l1extra::L1MuonParticleCollection>    l1extramuToken_;
+  edm::EDGetTokenT<l1extra::L1EmParticleCollection>      l1extraemiToken_, l1extraemnToken_;
+  edm::EDGetTokenT<l1extra::L1JetParticleCollection>     l1extrajetcToken_, l1extrajetfToken_, l1extrajetToken_, l1extrataujetToken_;
+  edm::EDGetTokenT<l1extra::L1EtMissParticleCollection>  l1extrametToken_,l1extramhtToken_;
+
+  edm::EDGetTokenT<L1GlobalTriggerReadoutRecord>         gtReadoutRecordToken_;
+  edm::EDGetTokenT<L1GlobalTriggerObjectMapRecord>       gtObjectMapToken_;
+  edm::EDGetTokenT< L1GctHFBitCountsCollection >         gctBitCountsToken_;
+  edm::EDGetTokenT< L1GctHFRingEtSumsCollection >        gctRingSumsToken_;
+
+  edm::EDGetTokenT<reco::CandidateView>                     mctruthToken_;
+  edm::EDGetTokenT<std::vector<SimTrack> >                  simtracksToken_;
+  edm::EDGetTokenT<std::vector<SimVertex> >                 simverticesToken_;
+  edm::EDGetTokenT<std::vector<PileupSummaryInfo> >         pileupInfoToken_;
+  edm::EDGetTokenT<reco::VertexCollection>                  VertexTagOffline0Token_;
+
   int errCnt;
   static int errMax() { return 5; }
 
   std::string _HistName; // Name of histogram file
   double _EtaMin,_EtaMax;
   TFile* m_file; // pointer to Histogram file
-	bool _UseTFileService;
+  bool _UseTFileService;
 
 };

@@ -48,6 +48,7 @@ const char * kL1GctRingSums               = "L1 GCT HF ring sums";
 const char * kMctruth                     = "GEN particles";
 const char * kSimhit                      = "SIM information";
 const char * kGenEventInfo                = "GEN information";
+const char * kPileupInfo                  = "PileUp information";
 const char * kMucands2                    = "L2 muon candidates";
 const char * kMucands3                    = "L3 muon candidates";
 const char * kMunovtxcands2               = "L2 no-vertex muon candidates"; 
@@ -132,5 +133,3 @@ const char * kECALActivityTrackIso          = "ECAL Activity TIso";
 const char * kECALActivityR9              = "ECAL Activity R9 spike cleaning";
 const char * kECALActivityR9ID          = "ECAL Activity R9ID";
 const char * kECALActivityHoverEH          = "ECAL Activity H for HoverE";
-
-const char * kPileupInfo                  = "MC Pileup information";

@@ -520,7 +520,6 @@ void HLTInfo::analyze(const edm::Handle<edm::TriggerResults>                 & h
       //ccla determine if more than 1 bx was unpacked in event; add OR all bx's if so
       const edm::Provenance& prov = iEvent.getProvenance(L1GTRR.id());
       //const string& procName = prov.processName();
-      //edm::ParameterSetID setId = prov.psetID();
       //std::cout << "procName:" << procName << std::endl;
       //std::cout << "provinfo:" << prov << std::endl;
       //std::cout << "setid:" << setId << std::endl;

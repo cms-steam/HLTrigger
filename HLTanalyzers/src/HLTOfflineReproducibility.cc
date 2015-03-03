@@ -13,7 +13,6 @@
 //
 // Original Author:  Juliette Marie Alimena,40 3-A02,+41227671577,
 //         Created:  Fri Apr 22 15:46:58 CEST 2011
-// $Id: HLTOfflineReproducibility.cc,v 1.10 2012/01/18 08:56:39 jalimena Exp $
 //
 //
 
@@ -70,14 +69,14 @@ public:
   
   
 private:
-  virtual void beginJob() ;
-  virtual void analyze(const edm::Event&, const edm::EventSetup&);
-  virtual void endJob() ;
+  virtual void beginJob() override ;
+  virtual void analyze(const edm::Event&, const edm::EventSetup&) override;
+  virtual void endJob() override ;
   
-  virtual void beginRun(edm::Run const&, edm::EventSetup const&);
-  virtual void endRun(edm::Run const&, edm::EventSetup const&);
-  virtual void beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&);
-  virtual void endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&);
+  virtual void beginRun(edm::Run const&, edm::EventSetup const&) override;
+  virtual void endRun(edm::Run const&, edm::EventSetup const&) override;
+  virtual void beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
+  virtual void endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
   
   bool check(std::string process, std::string pCheck);
 
@@ -87,7 +86,9 @@ private:
 
   edm::InputTag triggerLabelORIG_;
   edm::InputTag triggerLabelNEW_;
-  
+  edm::EDGetTokenT<edm::TriggerResults> triggerTokenORIG_;
+  edm::EDGetTokenT<edm::TriggerResults> triggerTokenNEW_;
+
   //Trigger Stuff
   unsigned int nPaths_, nPathsORIG_, nPathsNEW_, nDatasets_;
   vector<string> triggerNames_;
@@ -166,6 +167,8 @@ HLTOfflineReproducibility::HLTOfflineReproducibility(const edm::ParameterSet& iC
   //now do what ever initialization is needed
   //define parameters
   if (dqm_) dqms_ = edm::Service<DQMStore>().operator->();
+  triggerTokenORIG_ = consumes<edm::TriggerResults>(triggerLabelORIG_);
+  triggerTokenNEW_  = consumes<edm::TriggerResults>(triggerLabelNEW_);
 }
 
 
@@ -194,12 +197,12 @@ HLTOfflineReproducibility::analyze(const edm::Event& iEvent, const edm::EventSet
   //Initialize Trigger
   TriggerResults trORIG_;
   Handle<TriggerResults> h_trigResORIG_;
-  iEvent.getByLabel(triggerLabelORIG_, h_trigResORIG_);
+  iEvent.getByToken(triggerTokenORIG_, h_trigResORIG_);
   trORIG_ = *h_trigResORIG_;  
   
   TriggerResults trNEW_;
   Handle<TriggerResults> h_trigResNEW_;
-  iEvent.getByLabel(triggerLabelNEW_, h_trigResNEW_);  
+  iEvent.getByToken(triggerTokenNEW_, h_trigResNEW_);  
   trNEW_ = *h_trigResNEW_;
 
   vector<string> triggerListORIG_;

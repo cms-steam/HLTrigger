@@ -13,13 +13,14 @@ typedef std::pair<const char *, const edm::InputTag *> MissingCollectionInfo;
   
 template <class T>
 static inline
-bool getCollection(const edm::Event & event, std::vector<MissingCollectionInfo> & missing, edm::Handle<T> & handle, const edm::InputTag & name, const char * description) 
+bool getCollection(const edm::Event & event, std::vector<MissingCollectionInfo> & missing, edm::Handle<T> & handle, const edm::InputTag & name, const edm::EDGetTokenT<T> token, const char * description) 
 {
-  event.getByLabel(name, handle);
+  event.getByToken(token, handle);
   bool valid = handle.isValid();
   if (not valid) {
     missing.push_back( std::make_pair(description, & name) );
     handle.clear();
+    //	std::cout << "not valid "<< description << " " << name << std::endl;
   }
   return valid;
 }
@@ -60,7 +61,30 @@ HLTBitAnalyzer::HLTBitAnalyzer(edm::ParameterSet const& conf) {
 
   pileupInfo_         = edm::InputTag("addPileupInfo");
 
-	_UseTFileService = conf.getUntrackedParameter<bool>("UseTFileService",false);
+  hltresultsToken_ = consumes<edm::TriggerResults>(hltresults_);
+  genEventInfoToken_ = consumes<GenEventInfoProduct>(genEventInfo_);
+  l1extramuToken_ = consumes<l1extra::L1MuonParticleCollection>(m_l1extramu);
+  l1extraemiToken_ = consumes<l1extra::L1EmParticleCollection>(m_l1extraemi);
+  l1extraemnToken_ = consumes<l1extra::L1EmParticleCollection>(m_l1extraemn);
+  
+  l1extrajetcToken_ = consumes<l1extra::L1JetParticleCollection>(m_l1extrajetc);
+  l1extrajetfToken_ = consumes<l1extra::L1JetParticleCollection>(m_l1extrajetf);
+  l1extrajetToken_ = consumes<l1extra::L1JetParticleCollection>(m_l1extrajet);
+  l1extrataujetToken_ = consumes<l1extra::L1JetParticleCollection>(m_l1extrataujet);
+  l1extrametToken_ = consumes<l1extra::L1EtMissParticleCollection>(m_l1extramet);
+  l1extramhtToken_ = consumes<l1extra::L1EtMissParticleCollection>(m_l1extramht);
+  gtReadoutRecordToken_ = consumes<L1GlobalTriggerReadoutRecord>(gtReadoutRecord_);
+  gtObjectMapToken_ = consumes<L1GlobalTriggerObjectMapRecord>(gtObjectMap_);
+  gctBitCountsToken_ = consumes<L1GctHFBitCountsCollection>(gctBitCounts_);
+  gctRingSumsToken_ = consumes<L1GctHFRingEtSumsCollection>(gctRingSums_);
+
+  mctruthToken_ = consumes<reco::CandidateView>(mctruth_);
+  VertexTagOffline0Token_ = consumes<reco::VertexCollection>(VertexTagOffline0_);
+  simtracksToken_ = consumes<std::vector<SimTrack> >(simhits_);
+  simverticesToken_ = consumes<std::vector<SimVertex> >(simhits_);
+  pileupInfoToken_ = consumes<std::vector<PileupSummaryInfo> >(pileupInfo_);
+  
+  _UseTFileService = conf.getUntrackedParameter<bool>("UseTFileService",false);
 	
   m_file = 0;   // set to null
   errCnt = 0;
@@ -84,7 +108,7 @@ HLTBitAnalyzer::HLTBitAnalyzer(edm::ParameterSet const& conf) {
   hlt_analysis_.setup(conf, HltTree);
   mct_analysis_.setup(conf, HltTree);
   vrt_analysisOffline0_.setup(conf, HltTree, "Offline0");
-  evt_header_.setup(HltTree);
+  evt_header_.setup(consumesCollector(), HltTree);
 }
 
 // Boiler-plate "analyze" method declaration for an analyzer module.
@@ -111,33 +135,30 @@ void HLTBitAnalyzer::analyze(edm::Event const& iEvent, edm::EventSetup const& iS
   // extract the collections from the event, check their validity and log which are missing
   std::vector<MissingCollectionInfo> missing;
 
-  getCollection( iEvent, missing, hltresults,      hltresults_,        kHltresults );
-  getCollection( iEvent, missing, l1extemi,        m_l1extraemi,       kL1extemi );
-  getCollection( iEvent, missing, l1extemn,        m_l1extraemn,       kL1extemn );
-  getCollection( iEvent, missing, l1extmu,         m_l1extramu,        kL1extmu );
-  getCollection( iEvent, missing, l1extjetc,       m_l1extrajetc,      kL1extjetc );
-  getCollection( iEvent, missing, l1extjetf,       m_l1extrajetf,      kL1extjetf );
-  getCollection( iEvent, missing, l1extjet,        m_l1extrajet,       kL1extjet );
-  getCollection( iEvent, missing, l1exttaujet,     m_l1extrataujet,    kL1exttaujet );
-  getCollection( iEvent, missing, l1extmet,        m_l1extramet,       kL1extmet );
-  getCollection( iEvent, missing, l1extmht,        m_l1extramht,       kL1extmht );
-  getCollection( iEvent, missing, l1GtRR,          gtReadoutRecord_,   kL1GtRR );
-  getCollection( iEvent, missing, l1GtOMRec,       gtObjectMap_,       kL1GtOMRec );
-  getCollection( iEvent, missing, gctBitCounts,     gctBitCounts_,      kL1GctBitCounts );
-  getCollection( iEvent, missing, gctRingSums,      gctRingSums_,       kL1GctRingSums );
+  getCollection( iEvent, missing, hltresults,      hltresults_,        hltresultsToken_,      kHltresults );
+  getCollection( iEvent, missing, l1extemi,        m_l1extraemi,       l1extraemiToken_,      kL1extemi );
+  getCollection( iEvent, missing, l1extemn,        m_l1extraemn,       l1extraemnToken_,      kL1extemn );
+  getCollection( iEvent, missing, l1extmu,         m_l1extramu,        l1extramuToken_,       kL1extmu );
+  getCollection( iEvent, missing, l1extjetc,       m_l1extrajetc,      l1extrajetcToken_,     kL1extjetc );
+  getCollection( iEvent, missing, l1extjetf,       m_l1extrajetf,      l1extrajetfToken_,     kL1extjetf );
+  getCollection( iEvent, missing, l1extjet,        m_l1extrajet,       l1extrajetToken_,      kL1extjet );
+  getCollection( iEvent, missing, l1exttaujet,     m_l1extrataujet,    l1extrataujetToken_,   kL1exttaujet );
+  getCollection( iEvent, missing, l1extmet,        m_l1extramet,       l1extrametToken_,      kL1extmet );
+  getCollection( iEvent, missing, l1extmht,        m_l1extramht,       l1extramhtToken_,      kL1extmht );
+  getCollection( iEvent, missing, l1GtRR,          gtReadoutRecord_,   gtReadoutRecordToken_, kL1GtRR );
+  getCollection( iEvent, missing, l1GtOMRec,       gtObjectMap_,       gtObjectMapToken_,     kL1GtOMRec );
+  getCollection( iEvent, missing, gctBitCounts,    gctBitCounts_,      gctBitCountsToken_,    kL1GctBitCounts );
+  getCollection( iEvent, missing, gctRingSums,     gctRingSums_,       gctRingSumsToken_,     kL1GctRingSums );
 
-  getCollection( iEvent, missing, mctruth,         mctruth_,           kMctruth );
-  getCollection( iEvent, missing, simTracks,       simhits_,           kSimhit );
-  getCollection( iEvent, missing, simVertices,     simhits_,           kSimhit );
-  getCollection( iEvent, missing, genEventInfo,    genEventInfo_,      kGenEventInfo );
-  getCollection( iEvent, missing, pupInfo,         pileupInfo_,        kPileupInfo );
+  getCollection( iEvent, missing, mctruth,         mctruth_,   mctruthToken_,     kMctruth );
+  getCollection( iEvent, missing, simTracks,       simhits_,  simtracksToken_,         kSimhit );
+  getCollection( iEvent, missing, simVertices,     simhits_,    simverticesToken_,       kSimhit );
+  getCollection( iEvent, missing, genEventInfo,    genEventInfo_,    genEventInfoToken_,    kGenEventInfo );
+  getCollection( iEvent, missing, pupInfo,         pileupInfo_,   pileupInfoToken_,      kPileupInfo );
 
-  getCollection( iEvent, missing, recoVertexsOffline0,      VertexTagOffline0_,         kRecoVerticesOffline0 );
+  getCollection( iEvent, missing, recoVertexsOffline0,      VertexTagOffline0_,         VertexTagOffline0Token_,     kRecoVerticesOffline0 );
   double ptHat=-1.;
   if (genEventInfo.isValid()) {ptHat=genEventInfo->qScale();}
-
-  //edm::ESHandle<LumiCorrectionParam> lumicorrdatahandle; //get LumiCorrectionParam object from event setup 
-  //iSetup.getData(lumicorrdatahandle); 
 
   // print missing collections
   if (not missing.empty() and (errCnt < errMax())) {
@@ -170,7 +191,6 @@ void HLTBitAnalyzer::analyze(edm::Event const& iEvent, edm::EventSetup const& iS
     iEvent,
     HltTree);
 
-  //evt_header_.analyze(iEvent, lumicorrdatahandle, HltTree);
   evt_header_.analyze(iEvent, HltTree);
 
   mct_analysis_.analyze(
@@ -184,7 +204,6 @@ void HLTBitAnalyzer::analyze(edm::Event const& iEvent, edm::EventSetup const& iS
   vrt_analysisOffline0_.analyze(
   				recoVertexsOffline0,
   				HltTree);
-
 
   // std::cout << " Ending Event Analysis" << std::endl;
   // After analysis, fill the variables tree

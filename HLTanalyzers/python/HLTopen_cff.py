@@ -1,8 +1,7 @@
 import FWCore.ParameterSet.Config as cms
  
 # import the whole HLT menu
-#from HLTrigger.HLTanalyzers.HLT_FULL_cff import *
-from HLTrigger.HLTanalyzers.hlt700 import *
+from HLTrigger.HLTanalyzers.HLT_FULL_cff import *
 
 ########################################################
 # Customizations
