@@ -103,7 +103,7 @@ void HLTMCtruth::analyze(const edm::Handle<reco::CandidateView> & mctruth,
 	int pdgid = simTracks->at(j).type();
 	if (abs(pdgid)!=13) continue;
 	double pt = simTracks->at(j).momentum().pt();
-	if (pt<2.5) continue;
+	if (pt<5.0) continue;
 	double eta = simTracks->at(j).momentum().eta();
 	if (abs(eta)>2.5) continue;
 	if (simTracks->at(j).noVertex()) continue;
@@ -111,9 +111,9 @@ void HLTMCtruth::analyze(const edm::Handle<reco::CandidateView> & mctruth,
 	double x = simVertices->at(vertIndex).position().x();
 	double y = simVertices->at(vertIndex).position().y();
 	double r = sqrt(x*x+y*y);
-	if (r>150.) continue; // I think units are cm here
+	if (r>200.) continue; // I think units are cm here
 	double z = simVertices->at(vertIndex).position().z();
-	if (abs(z)>300.) continue; // I think units are cm here
+	if (abs(z)>400.) continue; // I think units are cm here
 	mu3 += 1;
 	break;
       }
