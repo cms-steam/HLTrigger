@@ -16,6 +16,7 @@ HLTMCtruth::HLTMCtruth() {
 
   //set parameter defaults 
   _Monte=false;
+  _Gen=false;
   _Debug=false;
 }
 
@@ -28,29 +29,32 @@ void HLTMCtruth::setup(const edm::ParameterSet& pSet, TTree* HltTree) {
   for ( std::vector<std::string>::iterator iParam = parameterNames.begin();
 	iParam != parameterNames.end(); iParam++ ){
     if  ( (*iParam) == "Monte" ) _Monte =  myMCParams.getParameter<bool>( *iParam );
+    else if ( (*iParam) == "GenTracks" ) _Gen =  myMCParams.getParameter<bool>( *iParam );
     else if ( (*iParam) == "Debug" ) _Debug =  myMCParams.getParameter<bool>( *iParam );
   }
 
-  const int kMaxMcTruth = 10000;
-  mcpid = new int[kMaxMcTruth];
-  mcstatus = new int[kMaxMcTruth];
-  mcvx = new float[kMaxMcTruth];
-  mcvy = new float[kMaxMcTruth];
-  mcvz = new float[kMaxMcTruth];
-  mcpt = new float[kMaxMcTruth];
-  mceta = new float[kMaxMcTruth];
-  mcphi = new float[kMaxMcTruth];
+  if (_Gen) {
+    const int kMaxMcTruth = 10000;
+    mcpid = new int[kMaxMcTruth];
+    mcstatus = new int[kMaxMcTruth];
+    mcvx = new float[kMaxMcTruth];
+    mcvy = new float[kMaxMcTruth];
+    mcvz = new float[kMaxMcTruth];
+    mcpt = new float[kMaxMcTruth];
+    mceta = new float[kMaxMcTruth];
+    mcphi = new float[kMaxMcTruth];
 
-  // MCtruth-specific branches of the tree 
-  HltTree->Branch("NMCpart",&nmcpart,"NMCpart/I");
-  HltTree->Branch("MCpid",mcpid,"MCpid[NMCpart]/I");
-  HltTree->Branch("MCstatus",mcstatus,"MCstatus[NMCpart]/I");
-  HltTree->Branch("MCvtxX",mcvx,"MCvtxX[NMCpart]/F");
-  HltTree->Branch("MCvtxY",mcvy,"MCvtxY[NMCpart]/F");
-  HltTree->Branch("MCvtxZ",mcvz,"MCvtxZ[NMCpart]/F");
-  HltTree->Branch("MCpt",mcpt,"MCpt[NMCpart]/F");
-  HltTree->Branch("MCeta",mceta,"MCeta[NMCpart]/F");
-  HltTree->Branch("MCphi",mcphi,"MCphi[NMCpart]/F");
+    // MCtruth-specific branches of the tree 
+    HltTree->Branch("NMCpart",&nmcpart,"NMCpart/I");
+    HltTree->Branch("MCpid",mcpid,"MCpid[NMCpart]/I");
+    HltTree->Branch("MCstatus",mcstatus,"MCstatus[NMCpart]/I");
+    HltTree->Branch("MCvtxX",mcvx,"MCvtxX[NMCpart]/F");
+    HltTree->Branch("MCvtxY",mcvy,"MCvtxY[NMCpart]/F");
+    HltTree->Branch("MCvtxZ",mcvz,"MCvtxZ[NMCpart]/F");
+    HltTree->Branch("MCpt",mcpt,"MCpt[NMCpart]/F");
+    HltTree->Branch("MCeta",mceta,"MCeta[NMCpart]/F");
+    HltTree->Branch("MCphi",mcphi,"MCphi[NMCpart]/F");
+  }
   HltTree->Branch("MCPtHat",&pthatf,"MCPtHat/F");
   HltTree->Branch("MCmu3",&nmu3,"MCmu3/I");
   HltTree->Branch("MCel3",&nel3,"MCel3/I");
@@ -134,7 +138,7 @@ void HLTMCtruth::analyze(const edm::Handle<reco::CandidateView> & mctruth,
 
     }
 
-    if (mctruth.isValid()){
+    if (_Gen && mctruth.isValid()){
 
       for (size_t i = 0; i < mctruth->size(); ++ i) {
 	const reco::Candidate & p = (*mctruth)[i];
