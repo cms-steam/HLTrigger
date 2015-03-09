@@ -33,28 +33,26 @@ void HLTMCtruth::setup(const edm::ParameterSet& pSet, TTree* HltTree) {
     else if ( (*iParam) == "Debug" ) _Debug =  myMCParams.getParameter<bool>( *iParam );
   }
 
-  if (_Gen) {
-    const int kMaxMcTruth = 10000;
-    mcpid = new int[kMaxMcTruth];
-    mcstatus = new int[kMaxMcTruth];
-    mcvx = new float[kMaxMcTruth];
-    mcvy = new float[kMaxMcTruth];
-    mcvz = new float[kMaxMcTruth];
-    mcpt = new float[kMaxMcTruth];
-    mceta = new float[kMaxMcTruth];
-    mcphi = new float[kMaxMcTruth];
-
-    // MCtruth-specific branches of the tree 
-    HltTree->Branch("NMCpart",&nmcpart,"NMCpart/I");
-    HltTree->Branch("MCpid",mcpid,"MCpid[NMCpart]/I");
-    HltTree->Branch("MCstatus",mcstatus,"MCstatus[NMCpart]/I");
-    HltTree->Branch("MCvtxX",mcvx,"MCvtxX[NMCpart]/F");
-    HltTree->Branch("MCvtxY",mcvy,"MCvtxY[NMCpart]/F");
-    HltTree->Branch("MCvtxZ",mcvz,"MCvtxZ[NMCpart]/F");
-    HltTree->Branch("MCpt",mcpt,"MCpt[NMCpart]/F");
-    HltTree->Branch("MCeta",mceta,"MCeta[NMCpart]/F");
-    HltTree->Branch("MCphi",mcphi,"MCphi[NMCpart]/F");
-  }
+  const int kMaxMcTruth = 10000;
+  mcpid = new int[kMaxMcTruth];
+  mcstatus = new int[kMaxMcTruth];
+  mcvx = new float[kMaxMcTruth];
+  mcvy = new float[kMaxMcTruth];
+  mcvz = new float[kMaxMcTruth];
+  mcpt = new float[kMaxMcTruth];
+  mceta = new float[kMaxMcTruth];
+  mcphi = new float[kMaxMcTruth];
+  
+  // MCtruth-specific branches of the tree 
+  HltTree->Branch("NMCpart",&nmcpart,"NMCpart/I");
+  HltTree->Branch("MCpid",mcpid,"MCpid[NMCpart]/I");
+  HltTree->Branch("MCstatus",mcstatus,"MCstatus[NMCpart]/I");
+  HltTree->Branch("MCvtxX",mcvx,"MCvtxX[NMCpart]/F");
+  HltTree->Branch("MCvtxY",mcvy,"MCvtxY[NMCpart]/F");
+  HltTree->Branch("MCvtxZ",mcvz,"MCvtxZ[NMCpart]/F");
+  HltTree->Branch("MCpt",mcpt,"MCpt[NMCpart]/F");
+  HltTree->Branch("MCeta",mceta,"MCeta[NMCpart]/F");
+  HltTree->Branch("MCphi",mcphi,"MCphi[NMCpart]/F");
   HltTree->Branch("MCPtHat",&pthatf,"MCPtHat/F");
   HltTree->Branch("MCmu3",&nmu3,"MCmu3/I");
   HltTree->Branch("MCel3",&nel3,"MCel3/I");
