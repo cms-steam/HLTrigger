@@ -16,6 +16,7 @@ HLTMCtruth::HLTMCtruth() {
 
   //set parameter defaults 
   _Monte=false;
+  _Gen=false;
   _Debug=false;
 }
 
@@ -28,6 +29,7 @@ void HLTMCtruth::setup(const edm::ParameterSet& pSet, TTree* HltTree) {
   for ( std::vector<std::string>::iterator iParam = parameterNames.begin();
 	iParam != parameterNames.end(); iParam++ ){
     if  ( (*iParam) == "Monte" ) _Monte =  myMCParams.getParameter<bool>( *iParam );
+    else if ( (*iParam) == "GenTracks" ) _Gen =  myMCParams.getParameter<bool>( *iParam );
     else if ( (*iParam) == "Debug" ) _Debug =  myMCParams.getParameter<bool>( *iParam );
   }
 
@@ -40,7 +42,7 @@ void HLTMCtruth::setup(const edm::ParameterSet& pSet, TTree* HltTree) {
   mcpt = new float[kMaxMcTruth];
   mceta = new float[kMaxMcTruth];
   mcphi = new float[kMaxMcTruth];
-
+  
   // MCtruth-specific branches of the tree 
   HltTree->Branch("NMCpart",&nmcpart,"NMCpart/I");
   HltTree->Branch("MCpid",mcpid,"MCpid[NMCpart]/I");
@@ -134,7 +136,7 @@ void HLTMCtruth::analyze(const edm::Handle<reco::CandidateView> & mctruth,
 
     }
 
-    if (mctruth.isValid()){
+    if (_Gen && mctruth.isValid()){
 
       for (size_t i = 0; i < mctruth->size(); ++ i) {
 	const reco::Candidate & p = (*mctruth)[i];
