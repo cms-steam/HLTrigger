@@ -51,7 +51,7 @@ private:
   float pthatf;
   float ptEleMax,ptMuMax;
   // input variables
-  bool _Monte,_Debug;
+  bool _Monte,_Debug,_Gen;
 
 };
 
