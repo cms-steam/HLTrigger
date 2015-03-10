@@ -2202,15 +2202,15 @@ process.MessageLogger = cms.Service( "MessageLogger",
       INFO = cms.untracked.PSet(  limit = cms.untracked.int32( 0 ) ),
       noTimeStamps = cms.untracked.bool( False ),
       FwkReport = cms.untracked.PSet( 
-        reportEvery = cms.untracked.int32( 1 ),
+        reportEvery = cms.untracked.int32( 1000 ),
         limit = cms.untracked.int32( 0 )
       ),
-      default = cms.untracked.PSet(  limit = cms.untracked.int32( 10000000 ) ),
+      default = cms.untracked.PSet(  limit = cms.untracked.int32( 1000 ) ),
       Root_NoDictionary = cms.untracked.PSet(  limit = cms.untracked.int32( 0 ) ),
       FwkJob = cms.untracked.PSet(  limit = cms.untracked.int32( 0 ) ),
       FwkSummary = cms.untracked.PSet( 
-        reportEvery = cms.untracked.int32( 1 ),
-        limit = cms.untracked.int32( 10000000 )
+        reportEvery = cms.untracked.int32( 1000 ),
+        limit = cms.untracked.int32( 1000 )
       ),
       threshold = cms.untracked.string( "INFO" ),
       suppressInfo = cms.untracked.vstring(  ),
@@ -2220,7 +2220,7 @@ process.MessageLogger = cms.Service( "MessageLogger",
     ),
     FrameworkJobReport = cms.untracked.PSet( 
       default = cms.untracked.PSet(  limit = cms.untracked.int32( 0 ) ),
-      FwkJob = cms.untracked.PSet(  limit = cms.untracked.int32( 10000000 ) )
+      FwkJob = cms.untracked.PSet(  limit = cms.untracked.int32( 1000 ) )
     ),
     suppressWarning = cms.untracked.vstring( 'hltOnlineBeamSpot',
       'hltCtf3HitL1SeededWithMaterialTracks',
@@ -43713,4 +43713,4 @@ if 'MessageLogger' in process.__dict__:
     process.MessageLogger.categories.append('L1GtTrigReport')
     process.MessageLogger.categories.append('HLTrigReport')
     #process.MessageLogger.categories.append('FastReport')
-    process.MessageLogger.cerr.FwkReport.reportEvery = 100
+    process.MessageLogger.cerr.FwkReport.reportEvery = 1000
