@@ -36,6 +36,7 @@ public:
   /** Analyze the Data */
   void analyze(const edm::Handle<reco::CandidateView> & mctruth,
 	       const double        & pthat,
+	       const double        & weight,
 	       const edm::Handle<std::vector<SimTrack> > & simTracks,
 	       const edm::Handle<std::vector<SimVertex> > & simVertices,
 	       const edm::Handle<std::vector< PileupSummaryInfo > > & PupInfo, 
@@ -48,7 +49,7 @@ private:
   int *mcpid, *mcstatus;
   int nmcpart,nmu3,nel3,nab,nbb,nwenu,nwmunu,nzee,nzmumu;
   int npubx0, npuvertbx0;
-  float pthatf;
+  float pthatf, weightf, weightsignf;
   float ptEleMax,ptMuMax;
   // input variables
   bool _Monte,_Debug,_Gen;

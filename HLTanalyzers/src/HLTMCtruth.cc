@@ -54,6 +54,8 @@ void HLTMCtruth::setup(const edm::ParameterSet& pSet, TTree* HltTree) {
   HltTree->Branch("MCeta",mceta,"MCeta[NMCpart]/F");
   HltTree->Branch("MCphi",mcphi,"MCphi[NMCpart]/F");
   HltTree->Branch("MCPtHat",&pthatf,"MCPtHat/F");
+  HltTree->Branch("MCWeight",&weightf,"MCWeight/F");
+  HltTree->Branch("MCWeightSign",&weightsignf,"MCWeightSing/F");
   HltTree->Branch("MCmu3",&nmu3,"MCmu3/I");
   HltTree->Branch("MCel3",&nel3,"MCel3/I");
   HltTree->Branch("MCbb",&nbb,"MCbb/I");
@@ -72,6 +74,7 @@ void HLTMCtruth::setup(const edm::ParameterSet& pSet, TTree* HltTree) {
 /* **Analyze the event** */
 void HLTMCtruth::analyze(const edm::Handle<reco::CandidateView> & mctruth,
 			 const double        & pthat,
+			 const double        & weight,
 			 const edm::Handle<std::vector<SimTrack> > & simTracks,
 			 const edm::Handle<std::vector<SimVertex> > & simVertices,
 			 const edm::Handle<std::vector< PileupSummaryInfo > > & PupInfo,
@@ -93,6 +96,8 @@ void HLTMCtruth::analyze(const edm::Handle<reco::CandidateView> & mctruth,
     ptEleMax = -999.0;
     ptMuMax  = -999.0;    
     pthatf   = pthat;
+    weightf   = weight;
+    weightsignf   = (weight > 0) ? 1. : -1.;
     npubx0  = 0.0;
     npuvertbx0 = 0;
 

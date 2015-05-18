@@ -721,6 +721,7 @@ void HLTAnalyzer::analyze(edm::Event const& iEvent, edm::EventSetup const& iSetu
     double ptHat=-1.;
     if (genEventInfo.isValid()) {ptHat=genEventInfo->qScale();}
     
+    double weight = genEventInfo->weight();
     
     // print missing collections
     if (not missing.empty() and (errCnt < errMax())) {
@@ -837,6 +838,7 @@ void HLTAnalyzer::analyze(edm::Event const& iEvent, edm::EventSetup const& iSetu
     mct_analysis_.analyze(
                           mctruth,
                           ptHat,
+                          weight,
                           simTracks,
                           simVertices,
                           pupInfo,
