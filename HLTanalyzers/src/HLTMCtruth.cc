@@ -55,7 +55,7 @@ void HLTMCtruth::setup(const edm::ParameterSet& pSet, TTree* HltTree) {
   HltTree->Branch("MCphi",mcphi,"MCphi[NMCpart]/F");
   HltTree->Branch("MCPtHat",&pthatf,"MCPtHat/F");
   HltTree->Branch("MCWeight",&weightf,"MCWeight/F");
-  HltTree->Branch("MCWeightSign",&weightsignf,"MCWeightSing/F");
+  HltTree->Branch("MCWeightSign",&weightsignf,"MCWeightSign/F");
   HltTree->Branch("MCmu3",&nmu3,"MCmu3/I");
   HltTree->Branch("MCel3",&nel3,"MCel3/I");
   HltTree->Branch("MCbb",&nbb,"MCbb/I");
