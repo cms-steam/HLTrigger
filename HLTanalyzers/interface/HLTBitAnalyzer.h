@@ -99,5 +99,8 @@ private:
   double _EtaMin,_EtaMax;
   TFile* m_file; // pointer to Histogram file
   bool _UseTFileService;
+  bool _isData;
+
+  double ptHat, weight;
 
 };
