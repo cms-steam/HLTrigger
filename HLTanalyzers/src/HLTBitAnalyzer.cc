@@ -92,6 +92,7 @@ HLTBitAnalyzer::HLTBitAnalyzer(edm::ParameterSet const& conf) {
   // read run parameters with a default value
   edm::ParameterSet runParameters = conf.getParameter<edm::ParameterSet>("RunParameters");
   _HistName = runParameters.getUntrackedParameter<std::string>("HistogramFile", "test.root");
+  _isData = runParameters.getUntrackedParameter<bool>("isData",true);
 
   // open the tree file and initialize the tree
   if(_UseTFileService){
@@ -106,7 +107,7 @@ HLTBitAnalyzer::HLTBitAnalyzer(edm::ParameterSet const& conf) {
 
   // Setup the different analysis
   hlt_analysis_.setup(conf, HltTree);
-  mct_analysis_.setup(conf, HltTree);
+  if (!_isData) { mct_analysis_.setup(conf, HltTree); }
   vrt_analysisOffline0_.setup(conf, HltTree, "Offline0");
   evt_header_.setup(consumesCollector(), HltTree);
 }
@@ -157,11 +158,13 @@ void HLTBitAnalyzer::analyze(edm::Event const& iEvent, edm::EventSetup const& iS
   getCollection( iEvent, missing, pupInfo,         pileupInfo_,   pileupInfoToken_,      kPileupInfo );
 
   getCollection( iEvent, missing, recoVertexsOffline0,      VertexTagOffline0_,         VertexTagOffline0Token_,     kRecoVerticesOffline0 );
-  double ptHat=-1.;
-  if (genEventInfo.isValid()) {ptHat=genEventInfo->qScale();}
 
-  double weight = genEventInfo->weight();
-
+  if (!_isData) {
+    ptHat=-1.;
+    if (genEventInfo.isValid()) {ptHat=genEventInfo->qScale();}
+    
+    weight = genEventInfo->weight();
+  }
   // print missing collections
   if (not missing.empty() and (errCnt < errMax())) {
     errCnt++;
@@ -195,15 +198,16 @@ void HLTBitAnalyzer::analyze(edm::Event const& iEvent, edm::EventSetup const& iS
 
   evt_header_.analyze(iEvent, HltTree);
 
-  mct_analysis_.analyze(
-			mctruth,
-			ptHat,
-			weight,
-			simTracks,
-			simVertices,
-			pupInfo,
-			HltTree);
-
+  if (!_isData) {
+    mct_analysis_.analyze(
+			  mctruth,
+			  ptHat,
+			  weight,
+			  simTracks,
+			  simVertices,
+			  pupInfo,
+			  HltTree);
+  }
   vrt_analysisOffline0_.analyze(
   				recoVertexsOffline0,
   				HltTree);
