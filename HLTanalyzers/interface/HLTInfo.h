@@ -55,8 +55,14 @@
 #include "DataFormats/L1GlobalTrigger/interface/L1GlobalTriggerObjectMap.h"
 //#include "DataFormats/L1GlobalTrigger/interface/L1GtLogicParser.h"
 
-#include "HLTrigger/HLTcore/interface/HLTConfigProvider.h"
-#include "L1Trigger/GlobalTriggerAnalyzer/interface/L1GtUtils.h"
+//#include "HLTrigger/HLTcore/interface/HLTConfigProvider.h"
+//#include "L1Trigger/GlobalTriggerAnalyzer/interface/L1GtUtils.h"
+
+#include "HLTrigger/HLTcore/interface/HLTPrescaleProvider.h"
+namespace edm {
+  class ConsumesCollector;
+  class ParameterSet;
+}
 
 typedef std::vector<std::string> MyStrings;
 
@@ -68,8 +74,18 @@ typedef std::vector<std::string> MyStrings;
   */
 class HLTInfo {
 public:
-  HLTInfo(); 
+  //HLTInfo();
 
+  template <typename T>
+    HLTInfo(edm::ParameterSet const& pset,
+	    edm::ConsumesCollector&& iC,
+	    T& module);
+  
+  template <typename T>
+    HLTInfo(edm::ParameterSet const& pset,
+	    edm::ConsumesCollector& iC,
+	    T& module);  
+  
   void setup(const edm::ParameterSet& pSet, TTree* tree);
   void beginRun(const edm::Run& , const edm::EventSetup& );
 
@@ -93,6 +109,8 @@ public:
 	       TTree* tree);
 
 private:
+
+  HLTInfo();
 
   // Tree variables
   float *hltppt, *hltpeta;
@@ -119,8 +137,9 @@ private:
   TString * techBitToName;
   std::vector<std::string> dummyBranches_;
 
-  HLTConfigProvider hltConfig_; 
-  L1GtUtils m_l1GtUtils;
+  //HLTConfigProvider hltConfig_; 
+  //L1GtUtils m_l1GtUtils;
+  std::unique_ptr<HLTPrescaleProvider> hltPrescaleProvider_;
   std::string processName_;
 
   bool _OR_BXes;
@@ -129,5 +148,20 @@ private:
   // input variables
   bool _Debug;
 };
+
+template <typename T>
+HLTInfo::HLTInfo(edm::ParameterSet const& pset,
+		 edm::ConsumesCollector&& iC,
+		 T& module) :
+    HLTInfo(pset, iC, module) {
+}
+ 
+template <typename T>
+HLTInfo::HLTInfo(edm::ParameterSet const& pset,
+		 edm::ConsumesCollector& iC,
+		 T& module) :
+    HLTInfo() {
+    hltPrescaleProvider_.reset(new HLTPrescaleProvider(pset, iC, module));
+}
 
 #endif

@@ -46,7 +46,7 @@
 //#include "DataFormats/L1GlobalTrigger/interface/L1GtLogicParser.h"
 
 #include "HLTrigger/HLTcore/interface/HLTConfigProvider.h"
-#include "L1Trigger/GlobalTriggerAnalyzer/interface/L1GtUtils.h"
+//#include "L1Trigger/GlobalTriggerAnalyzer/interface/L1GtUtils.h"
 
 typedef std::vector<std::string> MyStrings;
 
@@ -104,7 +104,7 @@ private:
 
 
   HLTConfigProvider hltConfig_; 
-  L1GtUtils m_l1GtUtils;
+  //L1GtUtils m_l1GtUtils;
   std::string processName_;
 
   bool _OR_BXes;

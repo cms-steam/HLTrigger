@@ -13,6 +13,7 @@
 #include "FWCore/Common/interface/TriggerNames.h"
 
 // L1 related
+#include "HLTrigger/HLTcore/interface/HLTConfigProvider.h"
 #include "L1Trigger/GlobalTriggerAnalyzer/interface/L1GtUtils.h"
 #include "CondFormats/L1TObjects/interface/L1GtTriggerMenu.h"
 #include "CondFormats/DataRecord/interface/L1GtTriggerMenuRcd.h"
@@ -20,8 +21,8 @@
 #include "DataFormats/L1GlobalTrigger/interface/L1GlobalTriggerReadoutSetup.h"
 #include "DataFormats/L1GlobalTrigger/interface/L1GlobalTriggerReadoutRecord.h"
 
-static const bool useL1EventSetup(true);
-static const bool useL1GtTriggerMenuLite(false);
+//static const bool useL1EventSetup(true);
+//static const bool useL1GtTriggerMenuLite(false);
 
 HLTInfo::HLTInfo() {
 
@@ -35,7 +36,7 @@ void HLTInfo::beginRun(const edm::Run& run, const edm::EventSetup& c){
 
 
   bool changed(true);
-  if (hltConfig_.init(run,c,processName_,changed)) {
+  if (hltPrescaleProvider_->init(run,c,processName_,changed)) {
     // if init returns TRUE, initialisation has succeeded!
     if (changed) {
       // The HLT config has actually changed wrt the previous Run, hence rebook your
@@ -254,7 +255,8 @@ void HLTInfo::analyze(const edm::Handle<edm::TriggerResults>                 & h
       std::string trigName=triggerNames.triggerName(itrig);
       bool accept = hltresults->accept(itrig);
 
-      trigPrescl[itrig] = hltConfig_.prescaleValue(iEvent, eventSetup, trigName);
+      //trigPrescl[itrig] = hltConfig_.prescaleValue(iEvent, eventSetup, trigName);
+      trigPrescl[itrig] = hltPrescaleProvider_->prescaleValue(iEvent, eventSetup, trigName);
 
 
       if (accept){trigflag[itrig] = 1;}
@@ -488,16 +490,17 @@ void HLTInfo::analyze(const edm::Handle<edm::TriggerResults>                 & h
   //==============L1 information=======================================
 
   // L1 Triggers from Menu
+  L1GtUtils const& l1GtUtils = hltPrescaleProvider_->l1GtUtils();
 
   //  m_l1GtUtils.retrieveL1EventSetup(eventSetup);
-  m_l1GtUtils.getL1GtRunCache(iEvent,eventSetup,useL1EventSetup,useL1GtTriggerMenuLite);
+  //m_l1GtUtils.getL1GtRunCache(iEvent,eventSetup,useL1EventSetup,useL1GtTriggerMenuLite);
   edm::ESHandle<L1GtTriggerMenu> menuRcd;
   eventSetup.get<L1GtTriggerMenuRcd>().get(menuRcd) ;
   const L1GtTriggerMenu* menu = menuRcd.product();
 
   int iErrorCode = -1;
   L1GtUtils::TriggerCategory trigCategory = L1GtUtils::AlgorithmTrigger;
-  const int pfSetIndexAlgorithmTrigger = m_l1GtUtils.prescaleFactorSetIndex(
+  const int pfSetIndexAlgorithmTrigger = l1GtUtils.prescaleFactorSetIndex(
              iEvent, trigCategory, iErrorCode);
   if (iErrorCode == 0) {
     if (_Debug) std::cout << "%Prescale set index: " << pfSetIndexAlgorithmTrigger  << std::endl;
@@ -561,7 +564,7 @@ void HLTInfo::analyze(const edm::Handle<edm::TriggerResults>                 & h
       l1flag[iBit] = gtDecisionWord[iBit];
 
       std::string l1triggername= std::string (algoBitToName[iBit]);
-      l1Prescl[iBit] = m_l1GtUtils.prescaleFactor(iEvent, 
+      l1Prescl[iBit] = l1GtUtils.prescaleFactor(iEvent, 
 					       l1triggername,
 					       iErrorCode);
       
@@ -576,7 +579,7 @@ void HLTInfo::analyze(const edm::Handle<edm::TriggerResults>                 & h
       l1techflag[iBit] = (int) technicalTriggerWordBeforeMask.at(iBit);
 
       std::string l1triggername= std::string (techBitToName[iBit]);
-      l1techPrescl[iBit] = m_l1GtUtils.prescaleFactor(iEvent, 
+      l1techPrescl[iBit] = l1GtUtils.prescaleFactor(iEvent, 
 					       l1triggername,
 					       iErrorCode);
 
