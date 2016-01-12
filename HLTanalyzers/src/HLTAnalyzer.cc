@@ -24,8 +24,9 @@ bool getCollection(const edm::Event & event, std::vector<MissingCollectionInfo> 
 }
 
 // Boiler-plate constructor definition of an analyzer module:
-HLTAnalyzer::HLTAnalyzer(edm::ParameterSet const& conf) {
-    
+//HLTAnalyzer::HLTAnalyzer(edm::ParameterSet const& conf) {
+HLTAnalyzer::HLTAnalyzer(edm::ParameterSet const& conf) :
+  hlt_analysis_(conf, consumesCollector(), *this) {
     // If your module takes parameters, here is where you would define
     // their names and types, and access them to initialize internal
     // variables. Example as follows:
@@ -543,6 +544,9 @@ void HLTAnalyzer::analyze(edm::Event const& iEvent, edm::EventSetup const& iSetu
     edm::Handle<reco::HFEMClusterShapeAssociationCollection> electronHFClusterAssociation;  
     iEvent.getByToken(HFEMClusterShapeAssociationToken_,electronHFClusterAssociation);
 
+    edm::ESHandle<CaloTowerTopology> caloTowerTopology;
+    iSetup.get<HcalRecNumberingRecord>().get(caloTowerTopology);
+
     edm::ESHandle<MagneticField>                theMagField;
     iSetup.get<IdealMagneticFieldRecord>().get(theMagField);
     
@@ -765,6 +769,7 @@ void HLTAnalyzer::analyze(edm::Event const& iEvent, edm::EventSetup const& iSetu
 			  caloTowersCleanerUpperR45,
 			  caloTowersCleanerLowerR45,
 			  caloTowersCleanerNoR45,
+			  &*caloTowerTopology,
 			  recoPFMet,
                           towerThreshold_,
                           _MinPtGammas,
@@ -914,7 +919,8 @@ void HLTAnalyzer::endJob() {
     if (m_file)
         m_file->cd();
     
-    const edm::ParameterSet &thepset = edm::getProcessParameterSet();   
+    //const edm::ParameterSet &thepset = edm::getProcessParameterSet();
+    const edm::ParameterSet &thepset = edm::getProcessParameterSetContainingModule(moduleDescription());
     TList *list = HltTree->GetUserInfo();   
     list->Add(new TObjString(thepset.dump().c_str()));   
     
