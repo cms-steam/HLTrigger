@@ -13,7 +13,7 @@ hltbitanalysis = cms.EDAnalyzer("HLTBitAnalyzer",
     HLTProcessName                  = cms.string("HLT"),
 
     ### GEN objects
-    mctruth                         = cms.InputTag("genParticles::SIM"),
+    mctruth                         = cms.InputTag("genParticles::HLT"),
     genEventInfo                    = cms.InputTag("generator::SIM"),
 
     ### SIM objects
