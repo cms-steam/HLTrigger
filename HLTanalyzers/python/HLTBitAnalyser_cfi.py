@@ -25,7 +25,10 @@ hltbitanalysis = cms.EDAnalyzer("HLTBitAnalyzer",
     ### Run parameters
     RunParameters = cms.PSet(
         HistogramFile = cms.untracked.string('hltbitanalysis.root'),
-        isData         = cms.untracked.bool(False)
+        isData         = cms.untracked.bool(False),
+        Monte          = cms.bool(True),
+        GenTracks      = cms.bool(True)
+
     )
                                 
 )
