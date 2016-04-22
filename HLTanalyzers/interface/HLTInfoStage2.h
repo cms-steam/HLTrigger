@@ -1,5 +1,5 @@
-#ifndef HLTINFO_H
-#define HLTINFO_H
+#ifndef HLTINFOSTAGE2_H
+#define HLTINFOSTAGE2_H
 
 #include "TH1.h"
 #include "TH2.h"

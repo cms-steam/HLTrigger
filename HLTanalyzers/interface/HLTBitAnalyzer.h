@@ -1,7 +1,8 @@
 #include <iostream>
 
 #include "HLTrigger/HLTanalyzers/interface/EventHeader.h"
-#include "HLTrigger/HLTanalyzers/interface/HLTInfo.h"
+#include "HLTrigger/HLTanalyzers/interface/HLTResults.h"
+#include "HLTrigger/HLTanalyzers/interface/L1Results.h"
 
 #include "FWCore/Framework/interface/Frameworkfwd.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
@@ -13,12 +14,6 @@
 #include "FWCore/ParameterSet/interface/Registry.h"
 
 #include "DataFormats/Common/interface/Handle.h"
-
-#include "DataFormats/L1GlobalTrigger/interface/L1GlobalTriggerReadoutRecord.h"
-#include "DataFormats/L1GlobalTrigger/interface/L1GlobalTriggerReadoutSetupFwd.h"
-#include "DataFormats/L1GlobalTrigger/interface/L1GlobalTriggerObjectMapRecord.h"
-#include "DataFormats/L1GlobalTrigger/interface/L1GlobalTriggerObjectMapFwd.h"
-#include "DataFormats/L1GlobalTrigger/interface/L1GlobalTriggerObjectMap.h"
 
 #include "SimDataFormats/GeneratorProducts/interface/GenEventInfoProduct.h"
 #include "SimDataFormats/PileupSummaryInfo/interface/PileupSummaryInfo.h"  
@@ -43,6 +38,7 @@ public:
 
   // Analysis tree to be filled
   TTree *HltTree;
+  TTree *L1Tree;
 
 private:
   // variables persistent across events should be declared here.
@@ -50,25 +46,14 @@ private:
   ///Default analyses
 
   EventHeader evt_header_;
-  HLTInfo     hlt_analysis_;
+  HLTResults  hlt_analysis_;
+  L1Results   l1_analysis_;
 
   HLTMCtruth  mct_analysis_;
   RECOVertex  vrt_analysisOffline0_;
 
   edm::InputTag hltresults_,genEventInfo_;
-  std::string l1extramc_, l1extramu_;
-  edm::InputTag m_l1extramu;
-  edm::InputTag m_l1extraemi;
-  edm::InputTag m_l1extraemn;
-  edm::InputTag m_l1extrajetc;
-  edm::InputTag m_l1extrajetf;
-  edm::InputTag m_l1extrajet;
-  edm::InputTag m_l1extrataujet;
-  edm::InputTag m_l1extramet;
-  edm::InputTag m_l1extramht;
-
-  edm::InputTag gtReadoutRecord_,gtObjectMap_; 
-  edm::InputTag gctBitCounts_,gctRingSums_;
+  edm::InputTag l1results_;
 
   edm::InputTag mctruth_,simhits_; 
   edm::InputTag VertexTagOffline0_;
@@ -76,21 +61,16 @@ private:
 
   edm::EDGetTokenT<edm::TriggerResults>                  hltresultsToken_;
   edm::EDGetTokenT<GenEventInfoProduct>                  genEventInfoToken_;
-  edm::EDGetTokenT<l1extra::L1MuonParticleCollection>    l1extramuToken_;
-  edm::EDGetTokenT<l1extra::L1EmParticleCollection>      l1extraemiToken_, l1extraemnToken_;
-  edm::EDGetTokenT<l1extra::L1JetParticleCollection>     l1extrajetcToken_, l1extrajetfToken_, l1extrajetToken_, l1extrataujetToken_;
-  edm::EDGetTokenT<l1extra::L1EtMissParticleCollection>  l1extrametToken_,l1extramhtToken_;
-
-  edm::EDGetTokenT<L1GlobalTriggerReadoutRecord>         gtReadoutRecordToken_;
-  edm::EDGetTokenT<L1GlobalTriggerObjectMapRecord>       gtObjectMapToken_;
-  edm::EDGetTokenT< L1GctHFBitCountsCollection >         gctBitCountsToken_;
-  edm::EDGetTokenT< L1GctHFRingEtSumsCollection >        gctRingSumsToken_;
+  edm::EDGetTokenT<GlobalAlgBlkBxCollection>             ugt_token_;
 
   edm::EDGetTokenT<reco::CandidateView>                     mctruthToken_;
   edm::EDGetTokenT<std::vector<SimTrack> >                  simtracksToken_;
   edm::EDGetTokenT<std::vector<SimVertex> >                 simverticesToken_;
   edm::EDGetTokenT<std::vector<PileupSummaryInfo> >         pileupInfoToken_;
   edm::EDGetTokenT<reco::VertexCollection>                  VertexTagOffline0Token_;
+
+  // L1 menu
+  //edm::ESHandle<L1TUtmTriggerMenu>      l1menu_;
 
   int errCnt;
   static int errMax() { return 5; }
