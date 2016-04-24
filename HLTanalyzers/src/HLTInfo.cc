@@ -16,13 +16,6 @@
 #include "HLTrigger/HLTcore/interface/HLTConfigProvider.h"
 #include "L1Trigger/GlobalTriggerAnalyzer/interface/L1GtUtils.h"
 
-/*
-#include "CondFormats/L1TObjects/interface/L1GtTriggerMenu.h"
-#include "CondFormats/DataRecord/interface/L1GtTriggerMenuRcd.h"
-#include "DataFormats/L1GlobalTrigger/interface/L1GlobalTriggerReadoutSetupFwd.h"
-#include "DataFormats/L1GlobalTrigger/interface/L1GlobalTriggerReadoutSetup.h"
-#include "DataFormats/L1GlobalTrigger/interface/L1GlobalTriggerReadoutRecord.h"
-*/
 //static const bool useL1EventSetup(true);
 //static const bool useL1GtTriggerMenuLite(false);
 
@@ -532,15 +525,21 @@ void HLTInfo::analyze(const edm::Handle<edm::TriggerResults>                 & h
     //} // end get menu
 
   int iErrorCode = -1;
+  L1GtUtils::TriggerCategory trigCategory = L1GtUtils::AlgorithmTrigger;
+  const int pfSetIndexAlgorithmTrigger = l1GtUtils.prescaleFactorSetIndex(
+									  iEvent, trigCategory, iErrorCode);
+  if (iErrorCode == 0) {
+    if (_Debug) std::cout << "%Prescale set index: " << pfSetIndexAlgorithmTrigger  << std::endl;
+  }else{
+    std::cout << "%Could not extract Prescale set index from event record. Error code: " << iErrorCode << std::endl;
+  }
 
   // 1st event : Book as many branches as trigger paths provided in the input...
   if (l1results.isValid()) {  
-
-    GlobalAlgBlk const & results = l1results->at(0, 0);   
-    /*
+    
     int ntrigs = l1results->size();
     if (ntrigs==0){std::cout << "%L1Results -- No trigger name given in TriggerResults of the input " << std::endl;}
-
+    /*
     edm::TriggerNames const& triggerNames = iEvent.triggerNames(&results);
     // 1st event : Book as many branches as trigger paths provided in the input...
     */
@@ -549,34 +548,46 @@ void HLTInfo::analyze(const edm::Handle<edm::TriggerResults>                 & h
       // get L1 menu from event setup
       //      std::map<std::string, L1TUtmAlgorithm> const & algorithmMap_ = &(menu->getAlgorithmMap()); 
       // get the bit/name association                                                                                                                  
-   
+
       for (auto const & keyval: menu->getAlgorithmMap()) { 
 	std::string const & trigName  = keyval.second.getName(); 
-	unsigned int itrig = keyval.second.getIndex(); 
-	if (_Debug) std::cerr << "bit: " << itrig << "\tname: " << trigName << std::endl;                                                              
-         
-	algoBitToName[itrig] = TString( trigName );
-	l1flag[itrig] = (int)results.getAlgoDecisionFinal(itrig) ;  
-
+	unsigned int index = keyval.second.getIndex(); 
+	if (_Debug) std::cerr << "bit: " << index << "\tname: " << trigName << std::endl;                                                              
+	  
+	int itrig = index;
+ 	algoBitToName[itrig] = TString( trigName );
+	
 	TString l1trigName= std::string (algoBitToName[itrig]); 
 	std::string l1triggername= std::string (algoBitToName[itrig]); 
-	l1Prescl[itrig] = l1GtUtils.prescaleFactor(iEvent,     
-						   l1triggername,
-						   iErrorCode);
-	
+	HltTree->Branch(l1trigName,l1flag+itrig,l1trigName+"/I");                    
+        HltTree->Branch(l1trigName+"_Prescl",l1Prescl+itrig,l1trigName+"_Prescl/I"); 
 
-	HltTree->Branch(l1trigName,l1flag[itrig],l1trigName+"/I");                    
-        HltTree->Branch(l1trigName+"_Prescl",l1Prescl[itrig],l1trigName+"_Prescl/I"); 
+      } // end algo Map
 
-	if (_Debug) std::cout << "L1 TD: "<<itrig<<" "<<algoBitToName[itrig]<<" "
-			      << l1flag[itrig] <<" " 
-			      << l1Prescl[itrig] << std::endl;         
-
-      }  
     } // end l1evtCnt=0
 
-    //    L1EvtCnt++;
+    GlobalAlgBlk const &result = l1results->at(0, 0);
 
+    // get the individual decisions from the GlobalAlgBlk
+    for (unsigned int itrig = 0; itrig < result.maxPhysicsTriggers; ++itrig) {
+      //      std::cerr << "bit: " << itrig << "\tresult: " << results.getAlgoDecisionFinal(itrig) << std::endl;
+
+      bool myflag = result.getAlgoDecisionFinal(itrig) ; 
+      if (myflag ) { l1flag[itrig] = 1; }
+      else {l1flag[itrig] =0 ; }
+
+      std::string l1triggername= std::string (algoBitToName[itrig]);
+      l1Prescl[itrig] = l1GtUtils.prescaleFactor(iEvent,                                                                                                               
+						 l1triggername,                                                                                                        
+						 iErrorCode);      
+
+      if (_Debug) std::cout << "L1 TD: "<<itrig<<" "<<algoBitToName[itrig]<<" "                                                                                        
+			    << l1flag[itrig] <<" "                                                                                                                     
+			    << l1Prescl[itrig] << std::endl;           
+    }
+
+    L1EvtCnt++;
+    
     if (_Debug) std::cout << "%L1Info -- Done with routine" << std::endl;                                                                                      
   } // l1results.isValid
   else { if (_Debug) std::cout << "%L1Results -- No Trigger Result" << std::endl;}                                                                             
