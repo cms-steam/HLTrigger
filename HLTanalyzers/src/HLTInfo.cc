@@ -15,12 +15,14 @@
 // L1 related
 #include "HLTrigger/HLTcore/interface/HLTConfigProvider.h"
 #include "L1Trigger/GlobalTriggerAnalyzer/interface/L1GtUtils.h"
+
+/*
 #include "CondFormats/L1TObjects/interface/L1GtTriggerMenu.h"
 #include "CondFormats/DataRecord/interface/L1GtTriggerMenuRcd.h"
 #include "DataFormats/L1GlobalTrigger/interface/L1GlobalTriggerReadoutSetupFwd.h"
 #include "DataFormats/L1GlobalTrigger/interface/L1GlobalTriggerReadoutSetup.h"
 #include "DataFormats/L1GlobalTrigger/interface/L1GlobalTriggerReadoutRecord.h"
-
+*/
 //static const bool useL1EventSetup(true);
 //static const bool useL1GtTriggerMenuLite(false);
 
@@ -50,6 +52,8 @@ void HLTInfo::beginRun(const edm::Run& run, const edm::EventSetup& c){
     // In this case, all access methods will return empty values!
   }
 
+  
+
 }
 
 /*  Setup the analysis to put the branch-variables into the tree. */
@@ -71,17 +75,22 @@ void HLTInfo::setup(const edm::ParameterSet& pSet, TTree* HltTree) {
   const int kMaxTrigFlag = 10000;
   trigflag = new int[kMaxTrigFlag];
   trigPrescl = new int[kMaxTrigFlag];
+
   L1EvtCnt = 0;
   const int kMaxL1Flag = 10000;
   l1flag = new int[kMaxL1Flag];
   l1flag5Bx = new int[kMaxTrigFlag];
   l1Prescl = new int[kMaxL1Flag];
+
   l1techflag = new int[kMaxL1Flag];
-  l1techflag5Bx = new int[kMaxTrigFlag];
+  //  l1techflag5Bx = new int[kMaxTrigFlag];
   l1techPrescl = new int[kMaxTrigFlag];
+
   const int kMaxHLTPart = 10000;
   hltppt = new float[kMaxHLTPart];
   hltpeta = new float[kMaxHLTPart];
+
+  /*
   const int kMaxL1ExtEmI = 10000;
   l1extiemet = new float[kMaxL1ExtEmI];
   l1extieme = new float[kMaxL1ExtEmI];
@@ -123,10 +132,12 @@ void HLTInfo::setup(const edm::ParameterSet& pSet, TTree* HltTree) {
   l1exttaue = new float[kMaxL1ExtTau];
   l1exttaueta = new float[kMaxL1ExtTau];
   l1exttauphi = new float[kMaxL1ExtTau];
+  */
 
   algoBitToName = new TString[128];
   techBitToName = new TString[128];
 
+  /*
   HltTree->Branch("NL1IsolEm",&nl1extiem,"NL1IsolEm/I");
   HltTree->Branch("L1IsolEmEt",l1extiemet,"L1IsolEmEt[NL1IsolEm]/F");
   HltTree->Branch("L1IsolEmE",l1extieme,"L1IsolEmE[NL1IsolEm]/F");
@@ -158,6 +169,7 @@ void HLTInfo::setup(const edm::ParameterSet& pSet, TTree* HltTree) {
   HltTree->Branch("L1ForJetE",l1extjtfe,"L1ForJetE[NL1ForJet]/F");
   HltTree->Branch("L1ForJetEta",l1extjtfeta,"L1ForJetEta[NL1ForJet]/F");
   HltTree->Branch("L1ForJetPhi",l1extjtfphi,"L1ForJetPhi[NL1ForJet]/F");
+  */
   /*
   HltTree->Branch("NL1Jet",&nl1extjet,"NL1Jet/I");
   HltTree->Branch("L1JetEt",l1extjtet,"L1JetEt[NL1Jet]/F");
@@ -165,6 +177,7 @@ void HLTInfo::setup(const edm::ParameterSet& pSet, TTree* HltTree) {
   HltTree->Branch("L1JetEta",l1extjteta,"L1JetEta[NL1Jet]/F");
   HltTree->Branch("L1JetPhi",l1extjtphi,"L1JetPhi[NL1Jet]/F");
   */
+  /*
   HltTree->Branch("NL1Tau",&nl1exttau,"NL1Tau/I");
   HltTree->Branch("L1TauEt",l1exttauet,"L1TauEt[NL1Tau]/F");
   HltTree->Branch("L1TauE",l1exttaue,"L1TauE[NL1Tau]/F");
@@ -186,10 +199,13 @@ void HLTInfo::setup(const edm::ParameterSet& pSet, TTree* HltTree) {
   HltTree->Branch("L1HfTowerCountNegativeEtaRing1",&l1hfTowerCountNegativeEtaRing1,"L1HfTowerCountNegativeEtaRing1/I");
   HltTree->Branch("L1HfTowerCountPositiveEtaRing2",&l1hfTowerCountPositiveEtaRing2,"L1HfTowerCountPositiveEtaRing2/I");
   HltTree->Branch("L1HfTowerCountNegativeEtaRing2",&l1hfTowerCountNegativeEtaRing2,"L1HfTowerCountNegativeEtaRing2/I");
+  */
 }
 
 /* **Analyze the event** */
 void HLTInfo::analyze(const edm::Handle<edm::TriggerResults>                 & hltresults,
+		      const edm::Handle<GlobalAlgBlkBxCollection> & l1results,
+		      /*
                       const edm::Handle<l1extra::L1EmParticleCollection>     & L1ExtEmIsol,
                       const edm::Handle<l1extra::L1EmParticleCollection>     & L1ExtEmNIsol,
                       const edm::Handle<l1extra::L1MuonParticleCollection>   & L1ExtMu,
@@ -202,6 +218,7 @@ void HLTInfo::analyze(const edm::Handle<edm::TriggerResults>                 & h
                       const edm::Handle<L1GlobalTriggerReadoutRecord>        & L1GTRR,
 		      const edm::Handle<L1GctHFBitCountsCollection>          & gctBitCounts,
 		      const edm::Handle<L1GctHFRingEtSumsCollection>         & gctRingSums,
+		      */
 		      edm::EventSetup const& eventSetup,
 		      edm::Event const& iEvent,
                       TTree* HltTree) {
@@ -271,7 +288,7 @@ void HLTInfo::analyze(const edm::Handle<edm::TriggerResults>                 & h
   else { if (_Debug) std::cout << "%HLTInfo -- No Trigger Result" << std::endl;}
 
   /////////// Analyzing L1Extra objects //////////
-
+  /*
   const int maxL1EmIsol = 4;
   for (int i=0; i!=maxL1EmIsol; ++i){
     l1extiemet[i] = -999.;
@@ -486,6 +503,7 @@ void HLTInfo::analyze(const edm::Handle<edm::TriggerResults>                 & h
   else {
     if (_Debug) std::cout << "%HLTInfo -- No L1 MHT object" << std::endl;
   }
+  */
 
   //==============L1 information=======================================
 
@@ -494,196 +512,75 @@ void HLTInfo::analyze(const edm::Handle<edm::TriggerResults>                 & h
 
   //  m_l1GtUtils.retrieveL1EventSetup(eventSetup);
   //m_l1GtUtils.getL1GtRunCache(iEvent,eventSetup,useL1EventSetup,useL1GtTriggerMenuLite);
-  edm::ESHandle<L1GtTriggerMenu> menuRcd;
-  eventSetup.get<L1GtTriggerMenuRcd>().get(menuRcd) ;
-  const L1GtTriggerMenu* menu = menuRcd.product();
+  /*
+  unsigned long long id = setup.get<L1TUtmTriggerMenuRcd>().cacheIdentifier();
 
-  int iErrorCode = -1;
-  L1GtUtils::TriggerCategory trigCategory = L1GtUtils::AlgorithmTrigger;
-  const int pfSetIndexAlgorithmTrigger = l1GtUtils.prescaleFactorSetIndex(
-             iEvent, trigCategory, iErrorCode);
-  if (iErrorCode == 0) {
-    if (_Debug) std::cout << "%Prescale set index: " << pfSetIndexAlgorithmTrigger  << std::endl;
-  }else{
-    std::cout << "%Could not extract Prescale set index from event record. Error code: " << iErrorCode << std::endl;
-  }
+  if (id != cache_id_) {
+    cache_id_ = id;
+
+    //    edm::ESHandle<L1TUtmTriggerMenu> menu;
+    eventSetup.get<L1TUtmTriggerMenuRcd>().get(menu);
+    //    algorithmMap_ = &(l1GtMenu_->getAlgorithmMap());    
+
+    // get the bit/name association
+    for (auto const & keyval: menu->getAlgorithmMap()) {
+      std::string const & name  = keyval.second.getName();
+      unsigned int        index = keyval.second.getIndex();
+      std::cerr << "bit: " << index << "\tname: " << name << std::endl;
+    }
+
+  } // end get menu
+  */
+
+  //  GlobalAlgBlk const & results = l1results->at(0, 0);
 
   // 1st event : Book as many branches as trigger paths provided in the input...
-  if (L1GTRR.isValid()) {  
+  if (l1results.isValid()) {  
 
-    DecisionWord gtDecisionWord = L1GTRR->decisionWord();
-    const unsigned int numberTriggerBits(gtDecisionWord.size());
-    const TechnicalTriggerWord&  technicalTriggerWordBeforeMask = L1GTRR->technicalTriggerWord();
-    const unsigned int numberTechnicalTriggerBits(technicalTriggerWordBeforeMask.size());
-
+    int ntrigs = l1results->size();
+    if (ntrigs==0){std::cout << "%L1Results -- No trigger name given in TriggerResults of the input " << std::endl;}
+    edm::TriggerNames const& triggerNames = iEvent.triggerNames(*hltresults);
     // 1st event : Book as many branches as trigger paths provided in the input...
+
     if (L1EvtCnt==0){
-
- 
-      //ccla determine if more than 1 bx was unpacked in event; add OR all bx's if so
-      const edm::Provenance& prov = iEvent.getProvenance(L1GTRR.id());
-      //const string& procName = prov.processName();
-      //std::cout << "procName:" << procName << std::endl;
-      //std::cout << "provinfo:" << prov << std::endl;
-      //std::cout << "setid:" << setId << std::endl;
-      edm::ParameterSet pSet=parameterSet(prov);
-      //std::cout << "pset:" << pSet << std::endl;
-      if (pSet.exists("UnpackBxInEvent")){
-	UnpackBxInEvent = pSet.getParameter<int>("UnpackBxInEvent");
+      for (int itrig = 0; itrig != ntrigs; ++itrig) {
+        TString trigName = triggerNames.triggerName(itrig);
+        HltTree->Branch(trigName,l1flag+itrig,trigName+"/I");
+        HltTree->Branch(trigName+"_Prescl",l1Prescl+itrig,trigName+"_Prescl/I");
       }
-      if (_Debug) std::cout << "Number of beam crossings unpacked by GT: " << UnpackBxInEvent << std::endl;
-      if (UnpackBxInEvent == 5) _OR_BXes = true;
-
-      // get L1 menu from event setup
-      for (CItAlgo algo = menu->gtAlgorithmMap().begin(); algo!=menu->gtAlgorithmMap().end(); ++algo) {
-	if (_Debug) std::cout << "Name: " << (algo->second).algoName() << " Alias: " << (algo->second).algoAlias() << std::endl;
-        int itrig = (algo->second).algoBitNumber();
-	//        algoBitToName[itrig] = TString( (algo->second).algoName() );
-	algoBitToName[itrig] = TString( (algo->second).algoAlias() );
-        HltTree->Branch(algoBitToName[itrig],l1flag+itrig,algoBitToName[itrig]+"/I");
-        HltTree->Branch(algoBitToName[itrig]+"_Prescl",l1Prescl+itrig,algoBitToName[itrig]+"_Prescl/I");
-	if (_OR_BXes)
-	  HltTree->Branch(algoBitToName[itrig]+"_5bx",l1flag5Bx+itrig,algoBitToName[itrig]+"_5bx/I");
-      }
-
-      // Book branches for tech bits
-      for (CItAlgo techTrig = menu->gtTechnicalTriggerMap().begin(); techTrig != menu->gtTechnicalTriggerMap().end(); ++techTrig) {
-        int itrig = (techTrig->second).algoBitNumber();
-	techBitToName[itrig] = TString( (techTrig->second).algoName() );
-	if (_Debug) std::cout << "tech bit " << itrig << ": " << techBitToName[itrig] << " " << std::endl;
-	HltTree->Branch(techBitToName[itrig],l1techflag+itrig,techBitToName[itrig]+"/I");
-        HltTree->Branch(techBitToName[itrig]+"_Prescl",l1techPrescl+itrig,techBitToName[itrig]+"_Prescl/I");
-	if (_OR_BXes)
-	  HltTree->Branch(techBitToName[itrig]+"_5bx",l1techflag5Bx+itrig,techBitToName[itrig]+"_5bx/I");
-      }
-    }
-
-    std::string triggerAlgTechTrig = "PhysicsAlgorithms";
-    for (unsigned int iBit = 0; iBit < numberTriggerBits; ++iBit) {     
-      // ...Fill the corresponding accepts in branch-variables
-      l1flag[iBit] = gtDecisionWord[iBit];
-
-      std::string l1triggername= std::string (algoBitToName[iBit]);
-      l1Prescl[iBit] = l1GtUtils.prescaleFactor(iEvent, 
-					       l1triggername,
-					       iErrorCode);
-      
-      if (_Debug) std::cout << "L1 TD: "<<iBit<<" "<<algoBitToName[iBit]<<" "
-			    << gtDecisionWord[iBit]<<" "
-			    << l1Prescl[iBit] << std::endl;
-
-    }
-
-    triggerAlgTechTrig = "TechnicalTriggers";
-    for (unsigned int iBit = 0; iBit < numberTechnicalTriggerBits; ++iBit) {
-      l1techflag[iBit] = (int) technicalTriggerWordBeforeMask.at(iBit);
-
-      std::string l1triggername= std::string (techBitToName[iBit]);
-      l1techPrescl[iBit] = l1GtUtils.prescaleFactor(iEvent, 
-					       l1triggername,
-					       iErrorCode);
-
-      if (_Debug) std::cout << "L1 TD: "<<iBit<<" "<<techBitToName[iBit]<<" "
-			    << l1techflag[iBit]<<" "
-			    << l1Prescl[iBit] << std::endl;
-
-    }
-
-    if (_OR_BXes){
-      // look at all 5 bx window in case gt timing is off
-      // get Field Decision Logic
-      std::vector<DecisionWord> m_gtDecisionWord5Bx;
-      std::vector<TechnicalTriggerWord> m_gtTechDecisionWord5Bx;
-      std::vector<int> m_ibxn;
-
-      const std::vector<L1GtFdlWord> &m_gtFdlWord(L1GTRR->gtFdlVector());
-      for (std::vector<L1GtFdlWord>::const_iterator itBx = m_gtFdlWord.begin();
-	   itBx != m_gtFdlWord.end(); ++itBx) {
-	if (_Debug && L1EvtCnt==0) std::cout << "bx: " << (*itBx).bxInEvent() << " ";
-	m_gtDecisionWord5Bx.push_back((*itBx).gtDecisionWord());
-	m_gtTechDecisionWord5Bx.push_back((*itBx).gtTechnicalTriggerWord());
-      }
-      // --- Fill algo bits ---
-      for (unsigned int iBit = 0; iBit < numberTriggerBits; ++iBit) {     
-	// ...Fill the corresponding accepts in branch-variables
-	if (_Debug) std::cout << std::endl << " L1 TD: "<<iBit<<" "<<algoBitToName[iBit]<<" ";
-	int result=0;
-	int bitword=0; 
-	for (unsigned int jbx=0; jbx<m_gtDecisionWord5Bx.size(); ++jbx) {
-	  if (_Debug) std::cout << m_gtDecisionWord5Bx[jbx][iBit]<< " ";
-	  result += m_gtDecisionWord5Bx[jbx][iBit];
-	  if (m_gtDecisionWord5Bx[jbx][iBit]>0) bitword |= 1 << jbx;
+      int itdum = ntrigs;
+      for (unsigned int idum = 0; idum < dummyBranches_.size(); ++idum) {
+	TString trigName(dummyBranches_[idum].data());
+	bool addThisBranch = 1;
+	for (int itrig = 0; itrig != ntrigs; ++itrig) {
+	  TString realTrigName = triggerNames.triggerName(itrig);
+	  if(trigName == realTrigName) addThisBranch = 0;
 	}
-	if (_Debug && result>1) {std::cout << "5BxOr=" << result << "  Bitword= "<< bitword <<std::endl;
-	  std::cout << "Unpacking: " ;
-	  for (int i = 0; i<UnpackBxInEvent ; ++i){
-	    bool bitOn=bitword & (1 << i);
-	    std::cout << bitOn << " ";
-	  }
-	  std::cout << "\n";
+	if(addThisBranch){
+	  HltTree->Branch(trigName,l1flag+itdum,trigName+"/I");
+	  HltTree->Branch(trigName+"_Prescl",l1Prescl+itdum,trigName+"_Prescl/I");
+	  l1flag[itdum] = 0;
+	  l1Prescl[itdum] = 0;
+	  ++itdum;
 	}
-	l1flag5Bx[iBit] = bitword;
       }
-      // --- Fill tech bits ---
-      for (unsigned int iBit = 0; iBit < m_gtTechDecisionWord5Bx[2].size(); ++iBit) {     
-	// ...Fill the corresponding accepts in branch-variables
-	if (_Debug) std::cout << std::endl << " L1 TD: "<<iBit<<" "<<techBitToName[iBit]<<" ";
-	int result=0;
-	int bitword=0;       
-	for (unsigned int jbx=0; jbx<m_gtTechDecisionWord5Bx.size(); ++jbx) {
-	  if (_Debug) std::cout << m_gtTechDecisionWord5Bx[jbx][iBit]<< " ";
-	  result += m_gtTechDecisionWord5Bx[jbx][iBit];
-	  if (m_gtTechDecisionWord5Bx[jbx][iBit]>0) bitword |= 1 << jbx;
-	}
-	if (_Debug && result>1) {std::cout << "5BxOr=" << result << "  Bitword= "<< bitword  << std::endl;
-	  std::cout << "Unpacking: " ;
-	  for (int i = 0; i<UnpackBxInEvent ; ++i){
-	    bool bitOn=bitword & (1 << i);
-	    std::cout << bitOn << " ";
-	  }
-	  std::cout << "\n";
-	}
-	l1techflag5Bx[iBit] = bitword;
-      }
-    } // end of OR_BX
-
-    L1EvtCnt++;
-  }
-  else {
-    if (_Debug) std::cout << "%HLTInfo -- No L1 GT ReadoutRecord " << std::endl;
-  }
-
-  //
-  // LSB for feature bits = 0.125 GeV.
-  // The default LSB for the ring sums is 0.5 GeV.
-  
-  if (gctBitCounts.isValid()) {
-    L1GctHFBitCountsCollection::const_iterator bitCountItr;
-    for (bitCountItr=gctBitCounts->begin(); bitCountItr!=gctBitCounts->end(); ++bitCountItr) { 
-      if (bitCountItr->bx()==0){ // select in-time beam crossing
-	l1hfTowerCountPositiveEtaRing1=bitCountItr->bitCount(0);
-	l1hfTowerCountNegativeEtaRing1=bitCountItr->bitCount(1);
-	l1hfTowerCountPositiveEtaRing2=bitCountItr->bitCount(2);
-	l1hfTowerCountNegativeEtaRing2=bitCountItr->bitCount(3);
+      L1EvtCnt++;
+    }
+    for (int itrig = 0; itrig != ntrigs; ++itrig){
+      std::string trigName=triggerNames.triggerName(itrig);
+      bool accept = hltresults->accept(itrig);
+      l1Prescl[itrig] = hltPrescaleProvider_->prescaleValue(iEvent, eventSetup, trigName);
+      if (accept){l1flag[itrig] = 1;}
+      else {l1flag[itrig] = 0;}
+      if (_Debug){
+        if (_Debug) std::cout << "%L1Results --  Number of HLT Triggers: " << ntrigs << std::endl;
+	std::cout << "%L1Results --  HLTTrigger(" << itrig << "): " << trigName << " = " << accept << std::endl;
       }
     }
-  } else {
-    if (_Debug) std::cout << "%HLTInfo -- No L1 Gct HF BitCounts" << std::endl;
-  }
 
-  if (gctRingSums.isValid()) {
-    L1GctHFRingEtSumsCollection::const_iterator ringSumsItr;
-    for (ringSumsItr=gctRingSums->begin(); ringSumsItr!=gctRingSums->end(); ++ringSumsItr) { 
-      if (ringSumsItr->bx()==0){ // select in-time beam crossing
-	l1hfRing1EtSumPositiveEta=ringSumsItr->etSum(0);
-	l1hfRing1EtSumNegativeEta=ringSumsItr->etSum(1);
-	l1hfRing2EtSumPositiveEta=ringSumsItr->etSum(2);
-	l1hfRing2EtSumNegativeEta=ringSumsItr->etSum(3);
-      }
-    }
-  } else {
-    if (_Debug) std::cout << "%HLTInfo -- No L1 Gct HF RingSums" << std::endl;
-  }
+    if (_Debug) std::cout << "%HLTInfo -- Done with routine" << std::endl;                                                                                      
+  } // l1results.isValid
+  else { if (_Debug) std::cout << "%L1Results -- No Trigger Result" << std::endl;}                                                                             
 
-  if (_Debug) std::cout << "%HLTInfo -- Done with routine" << std::endl;
 }
+      
