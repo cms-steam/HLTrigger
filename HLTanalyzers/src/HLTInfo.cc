@@ -513,72 +513,71 @@ void HLTInfo::analyze(const edm::Handle<edm::TriggerResults>                 & h
   //  m_l1GtUtils.retrieveL1EventSetup(eventSetup);
   //m_l1GtUtils.getL1GtRunCache(iEvent,eventSetup,useL1EventSetup,useL1GtTriggerMenuLite);
   /*
-  unsigned long long id = setup.get<L1TUtmTriggerMenuRcd>().cacheIdentifier();
-
+  unsigned long long id = eventSetup.get<L1TUtmTriggerMenuRcd>().cacheIdentifier();
+  
   if (id != cache_id_) {
-    cache_id_ = id;
-
-    //    edm::ESHandle<L1TUtmTriggerMenu> menu;
-    eventSetup.get<L1TUtmTriggerMenuRcd>().get(menu);
-    //    algorithmMap_ = &(l1GtMenu_->getAlgorithmMap());    
-
-    // get the bit/name association
-    for (auto const & keyval: menu->getAlgorithmMap()) {
-      std::string const & name  = keyval.second.getName();
-      unsigned int        index = keyval.second.getIndex();
-      std::cerr << "bit: " << index << "\tname: " << name << std::endl;
-    }
-
-  } // end get menu
+    cache_id_ = id; 
   */
+  edm::ESHandle<L1TUtmTriggerMenu> menu;
+  eventSetup.get<L1TUtmTriggerMenuRcd>().get(menu);
+  //std::map<std::string, L1TUtmAlgorithm> const & algorithmMap_ = &(menu->getAlgorithmMap());    
+  
+  // get the bit/name association
+  for (auto const & keyval: menu->getAlgorithmMap()) {
+    std::string const & name  = keyval.second.getName();
+    unsigned int        index = keyval.second.getIndex();
+    std::cerr << "bit: " << index << "\tname: " << name << std::endl;
+  }
+  
+    //} // end get menu
 
-  //  GlobalAlgBlk const & results = l1results->at(0, 0);
+  int iErrorCode = -1;
 
   // 1st event : Book as many branches as trigger paths provided in the input...
   if (l1results.isValid()) {  
 
+    GlobalAlgBlk const & results = l1results->at(0, 0);   
+    /*
     int ntrigs = l1results->size();
     if (ntrigs==0){std::cout << "%L1Results -- No trigger name given in TriggerResults of the input " << std::endl;}
-    edm::TriggerNames const& triggerNames = iEvent.triggerNames(*hltresults);
+
+    edm::TriggerNames const& triggerNames = iEvent.triggerNames(&results);
     // 1st event : Book as many branches as trigger paths provided in the input...
-
+    */
     if (L1EvtCnt==0){
-      for (int itrig = 0; itrig != ntrigs; ++itrig) {
-        TString trigName = triggerNames.triggerName(itrig);
-        HltTree->Branch(trigName,l1flag+itrig,trigName+"/I");
-        HltTree->Branch(trigName+"_Prescl",l1Prescl+itrig,trigName+"_Prescl/I");
-      }
-      int itdum = ntrigs;
-      for (unsigned int idum = 0; idum < dummyBranches_.size(); ++idum) {
-	TString trigName(dummyBranches_[idum].data());
-	bool addThisBranch = 1;
-	for (int itrig = 0; itrig != ntrigs; ++itrig) {
-	  TString realTrigName = triggerNames.triggerName(itrig);
-	  if(trigName == realTrigName) addThisBranch = 0;
-	}
-	if(addThisBranch){
-	  HltTree->Branch(trigName,l1flag+itdum,trigName+"/I");
-	  HltTree->Branch(trigName+"_Prescl",l1Prescl+itdum,trigName+"_Prescl/I");
-	  l1flag[itdum] = 0;
-	  l1Prescl[itdum] = 0;
-	  ++itdum;
-	}
-      }
-      L1EvtCnt++;
-    }
-    for (int itrig = 0; itrig != ntrigs; ++itrig){
-      std::string trigName=triggerNames.triggerName(itrig);
-      bool accept = hltresults->accept(itrig);
-      l1Prescl[itrig] = hltPrescaleProvider_->prescaleValue(iEvent, eventSetup, trigName);
-      if (accept){l1flag[itrig] = 1;}
-      else {l1flag[itrig] = 0;}
-      if (_Debug){
-        if (_Debug) std::cout << "%L1Results --  Number of HLT Triggers: " << ntrigs << std::endl;
-	std::cout << "%L1Results --  HLTTrigger(" << itrig << "): " << trigName << " = " << accept << std::endl;
-      }
-    }
 
-    if (_Debug) std::cout << "%HLTInfo -- Done with routine" << std::endl;                                                                                      
+      // get L1 menu from event setup
+      //      std::map<std::string, L1TUtmAlgorithm> const & algorithmMap_ = &(menu->getAlgorithmMap()); 
+      // get the bit/name association                                                                                                                  
+   
+      for (auto const & keyval: menu->getAlgorithmMap()) { 
+	std::string const & trigName  = keyval.second.getName(); 
+	unsigned int itrig = keyval.second.getIndex(); 
+	if (_Debug) std::cerr << "bit: " << itrig << "\tname: " << trigName << std::endl;                                                              
+         
+	algoBitToName[itrig] = TString( trigName );
+	l1flag[itrig] = (int)results.getAlgoDecisionFinal(itrig) ;  
+
+	TString l1trigName= std::string (algoBitToName[itrig]); 
+	std::string l1triggername= std::string (algoBitToName[itrig]); 
+	l1Prescl[itrig] = l1GtUtils.prescaleFactor(iEvent,     
+						   l1triggername,
+						   iErrorCode);
+	
+
+	HltTree->Branch(l1trigName,l1flag[itrig],l1trigName+"/I");                    
+        HltTree->Branch(l1trigName+"_Prescl",l1Prescl[itrig],l1trigName+"_Prescl/I"); 
+
+	if (_Debug) std::cout << "L1 TD: "<<itrig<<" "<<algoBitToName[itrig]<<" "
+			      << l1flag[itrig] <<" " 
+			      << l1Prescl[itrig] << std::endl;         
+
+      }  
+    } // end l1evtCnt=0
+
+    //    L1EvtCnt++;
+
+    if (_Debug) std::cout << "%L1Info -- Done with routine" << std::endl;                                                                                      
   } // l1results.isValid
   else { if (_Debug) std::cout << "%L1Results -- No Trigger Result" << std::endl;}                                                                             
 
