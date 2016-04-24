@@ -12,6 +12,7 @@
 
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "DataFormats/Common/interface/TriggerResults.h"
+/*
 #include "DataFormats/L1Trigger/interface/L1EmParticle.h"
 #include "DataFormats/L1Trigger/interface/L1EmParticleFwd.h"
 #include "DataFormats/L1Trigger/interface/L1MuonParticle.h"
@@ -26,7 +27,7 @@
 #include "DataFormats/Candidate/interface/Candidate.h"
 
 #include "L1Trigger/RegionalCaloTrigger/interface/L1RCTProducer.h" 
-
+*/
 #include "DataFormats/L1CaloTrigger/interface/L1CaloCollections.h"
 #include "DataFormats/EcalDigi/interface/EcalDigiCollections.h"
 #include "DataFormats/HcalDigi/interface/HcalDigiCollections.h"
@@ -47,6 +48,13 @@
 #include "HLTrigger/HLTanalyzers/interface/JetUtil.h"
 #include "DataFormats/METReco/interface/CaloMETCollection.h"
 
+// L1 Stage2
+#include "CondFormats/DataRecord/interface/L1TUtmTriggerMenuRcd.h"
+#include "CondFormats/L1TObjects/interface/L1TUtmAlgorithm.h"
+#include "CondFormats/L1TObjects/interface/L1TUtmTriggerMenu.h"
+#include "DataFormats/L1TGlobal/interface/GlobalAlgBlk.h"
+#include "DataFormats/L1TGlobal/interface/GlobalExtBlk.h"
+/*
 // #include "DataFormats/L1Trigger/interface/L1ParticleMap.h"
 #include "DataFormats/L1GlobalTrigger/interface/L1GlobalTriggerReadoutRecord.h"
 #include "DataFormats/L1GlobalTrigger/interface/L1GlobalTriggerReadoutSetupFwd.h"
@@ -54,6 +62,7 @@
 #include "DataFormats/L1GlobalTrigger/interface/L1GlobalTriggerObjectMapFwd.h"
 #include "DataFormats/L1GlobalTrigger/interface/L1GlobalTriggerObjectMap.h"
 //#include "DataFormats/L1GlobalTrigger/interface/L1GtLogicParser.h"
+*/
 
 //#include "HLTrigger/HLTcore/interface/HLTConfigProvider.h"
 //#include "L1Trigger/GlobalTriggerAnalyzer/interface/L1GtUtils.h"
@@ -91,6 +100,8 @@ public:
 
   /** Analyze the Data */
   void analyze(const edm::Handle<edm::TriggerResults>                 & hltresults,
+	       const edm::Handle<GlobalAlgBlkBxCollection> & l1results,
+	       /*
 	       const edm::Handle<l1extra::L1EmParticleCollection>     & l1extemi,
 	       const edm::Handle<l1extra::L1EmParticleCollection>     & l1extemn,
 	       const edm::Handle<l1extra::L1MuonParticleCollection>   & l1extmu,
@@ -104,6 +115,7 @@ public:
 	       const edm::Handle<L1GlobalTriggerReadoutRecord>        & l1GTRR,
 	       const edm::Handle<L1GctHFBitCountsCollection>          & gctBitCounts,
 	       const edm::Handle<L1GctHFRingEtSumsCollection>         & gctRingSums,	       
+	       */
 	       edm::EventSetup const& eventSetup,
 	       edm::Event const& iEvent,
 	       TTree* tree);
@@ -114,6 +126,7 @@ private:
 
   // Tree variables
   float *hltppt, *hltpeta;
+  /*
   float *l1extiemet, *l1extieme, *l1extiemeta, *l1extiemphi;
   float *l1extnemet, *l1extneme, *l1extnemeta, *l1extnemphi;
   float *l1extmupt, *l1extmue, *l1extmueta, *l1extmuphi;
@@ -124,14 +137,20 @@ private:
   float *l1exttauet, *l1exttaue, *l1exttaueta, *l1exttauphi;
   float met, metphi, ettot;
   float mht, mhtphi, ethad;
-  int L1EvtCnt,HltEvtCnt,nhltpart,nl1extiem,nl1extnem,nl1extmu,nl1extjetc,nl1extjetf,nl1extjet,nl1extjt,nl1exttau;
+  */
+  int L1EvtCnt,HltEvtCnt,nhltpart;
+  //,nl1extiem,nl1extnem,nl1extmu,nl1extjetc,nl1extjetf,nl1extjet,nl1extjt,nl1exttau;
   //int L1EvtCnt,HltEvtCnt,nhltpart,nl1extiem,nl1extnem,nl1extmu,nl1extjetc,nl1extjetf,nl1extjt,nl1exttau;
-  int *trigflag, *l1flag, *l1flag5Bx, *l1techflag, *l1techflag5Bx, *l1extmuiso, *l1extmumip, *l1extmufor, *l1extmurpc, *l1extmuqul;
+
+  int *trigflag, *l1flag, *l1flag5Bx, *l1techflag;
+  //, *l1techflag5Bx, *l1extmuiso, *l1extmumip, *l1extmufor, *l1extmurpc, *l1extmuqul;
   int *trigPrescl, *l1Prescl, *l1techPrescl; 
+  /*
   int l1hfRing1EtSumNegativeEta,l1hfRing2EtSumNegativeEta;
   int l1hfRing1EtSumPositiveEta,l1hfRing2EtSumPositiveEta;
   int l1hfTowerCountPositiveEtaRing1,l1hfTowerCountNegativeEtaRing1;
   int l1hfTowerCountPositiveEtaRing2,l1hfTowerCountNegativeEtaRing2;
+  */
 
   TString * algoBitToName;
   TString * techBitToName;
@@ -146,7 +165,18 @@ private:
   int UnpackBxInEvent; // save number of BXs unpacked in event
 
   // input variables
+  
+  // L1 uGT menu
+  unsigned long long cache_id_;
+
+  /*
+  edm::ESHandle<L1TUtmTriggerMenu> menu;
+  //std::map<std::string, L1TUtmAlgorithm> const & algorithmMap_;
+  const std::map<std::string, L1TUtmAlgorithm>* algorithmMap_;
+  */
   bool _Debug;
+
+
 };
 
 template <typename T>
