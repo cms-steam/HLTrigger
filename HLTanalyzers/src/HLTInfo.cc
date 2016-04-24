@@ -545,10 +545,7 @@ void HLTInfo::analyze(const edm::Handle<edm::TriggerResults>                 & h
     */
     if (L1EvtCnt==0){
 
-      // get L1 menu from event setup
-      //      std::map<std::string, L1TUtmAlgorithm> const & algorithmMap_ = &(menu->getAlgorithmMap()); 
-      // get the bit/name association                                                                                                                  
-
+      // get the bit/name association         
       for (auto const & keyval: menu->getAlgorithmMap()) { 
 	std::string const & trigName  = keyval.second.getName(); 
 	unsigned int index = keyval.second.getIndex(); 
@@ -570,7 +567,7 @@ void HLTInfo::analyze(const edm::Handle<edm::TriggerResults>                 & h
 
     // get the individual decisions from the GlobalAlgBlk
     for (unsigned int itrig = 0; itrig < result.maxPhysicsTriggers; ++itrig) {
-      //      std::cerr << "bit: " << itrig << "\tresult: " << results.getAlgoDecisionFinal(itrig) << std::endl;
+       //      std::cerr << "bit: " << itrig << "\tresult: " << results.getAlgoDecisionFinal(itrig) << std::endl;
 
       bool myflag = result.getAlgoDecisionFinal(itrig) ; 
       if (myflag ) { l1flag[itrig] = 1; }
