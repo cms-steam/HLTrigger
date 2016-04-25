@@ -10,6 +10,14 @@
 #include "TROOT.h"
 #include "TChain.h"
 
+
+// CMSSW
+#include "FWCore/Framework/interface/EventPrincipal.h"
+#include "FWCore/Framework/interface/ESHandle.h"
+#include "FWCore/Common/interface/Provenance.h"
+#include "DataFormats/Candidate/interface/Candidate.h"
+#include "DataFormats/Common/interface/Handle.h"
+
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "DataFormats/Common/interface/TriggerResults.h"
 /*
@@ -32,19 +40,6 @@
 #include "DataFormats/EcalDigi/interface/EcalDigiCollections.h"
 #include "DataFormats/HcalDigi/interface/HcalDigiCollections.h"
 
-//ccla
-#include "FWCore/Framework/interface/EventPrincipal.h"
-#include "FWCore/Common/interface/Provenance.h"
-
-/* #include "CalibFormats/CaloTPG/interface/CaloTPGTranscoder.h" */
-/* #include "CalibFormats/CaloTPG/interface/CaloTPGRecord.h" */
-/* #include "CondFormats/L1TObjects/interface/L1CaloEtScale.h" */
-/* #include "CondFormats/DataRecord/interface/L1EmEtScaleRcd.h" */
-/* #include "CondFormats/L1TObjects/interface/L1RCTParameters.h" */
-/* #include "CondFormats/DataRecord/interface/L1RCTParametersRcd.h" */
-/* #include "L1Trigger/RegionalCaloTrigger/interface/L1RCT.h" */
-/* #include "L1Trigger/RegionalCaloTrigger/interface/L1RCTLookupTables.h"  */
-
 #include "HLTrigger/HLTanalyzers/interface/JetUtil.h"
 #include "DataFormats/METReco/interface/CaloMETCollection.h"
 
@@ -54,20 +49,12 @@
 #include "CondFormats/L1TObjects/interface/L1TUtmTriggerMenu.h"
 #include "DataFormats/L1TGlobal/interface/GlobalAlgBlk.h"
 #include "DataFormats/L1TGlobal/interface/GlobalExtBlk.h"
-/*
-// #include "DataFormats/L1Trigger/interface/L1ParticleMap.h"
-#include "DataFormats/L1GlobalTrigger/interface/L1GlobalTriggerReadoutRecord.h"
-#include "DataFormats/L1GlobalTrigger/interface/L1GlobalTriggerReadoutSetupFwd.h"
-#include "DataFormats/L1GlobalTrigger/interface/L1GlobalTriggerObjectMapRecord.h"
-#include "DataFormats/L1GlobalTrigger/interface/L1GlobalTriggerObjectMapFwd.h"
-#include "DataFormats/L1GlobalTrigger/interface/L1GlobalTriggerObjectMap.h"
-//#include "DataFormats/L1GlobalTrigger/interface/L1GtLogicParser.h"
-*/
 
 //#include "HLTrigger/HLTcore/interface/HLTConfigProvider.h"
 //#include "L1Trigger/GlobalTriggerAnalyzer/interface/L1GtUtils.h"
 
 #include "HLTrigger/HLTcore/interface/HLTPrescaleProvider.h"
+
 namespace edm {
   class ConsumesCollector;
   class ParameterSet;
