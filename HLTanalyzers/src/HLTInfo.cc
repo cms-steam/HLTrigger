@@ -22,7 +22,7 @@
 HLTInfo::HLTInfo() {
 
   //set parameter defaults 
-  _Debug=false;
+  _Debug=true;
   _OR_BXes=false;
   UnpackBxInEvent=1;
 }
@@ -177,14 +177,14 @@ void HLTInfo::analyze(const edm::Handle<edm::TriggerResults>                 & h
   edm::ESHandle<L1TUtmTriggerMenu> menu;
   eventSetup.get<L1TUtmTriggerMenuRcd>().get(menu);
   //std::map<std::string, L1TUtmAlgorithm> const & algorithmMap_ = &(menu->getAlgorithmMap());    
-  
+  /*
   // get the bit/name association
   for (auto const & keyval: menu->getAlgorithmMap()) {
     std::string const & name  = keyval.second.getName();
     unsigned int        index = keyval.second.getIndex();
     std::cerr << "bit: " << index << "\tname: " << name << std::endl;
   }
-  
+  */
     //} // end get menu
 
   int iErrorCode = -1;
@@ -219,13 +219,17 @@ void HLTInfo::analyze(const edm::Handle<edm::TriggerResults>                 & h
 	
 	TString l1trigName= std::string (algoBitToName[itrig]); 
 	std::string l1triggername= std::string (algoBitToName[itrig]); 
+
+	if (_Debug) std::cerr << "bit: " << index << "\tname: " << l1trigName << std::endl;    
+
 	HltTree->Branch(l1trigName,l1flag+itrig,l1trigName+"/I");                    
         HltTree->Branch(l1trigName+"_Prescl",l1Prescl+itrig,l1trigName+"_Prescl/I"); 
 
       } // end algo Map
 
+      L1EvtCnt++;     
     } // end l1evtCnt=0
-
+  
     GlobalAlgBlk const &result = l1results->at(0, 0);
 
     // get the individual decisions from the GlobalAlgBlk
@@ -246,9 +250,9 @@ void HLTInfo::analyze(const edm::Handle<edm::TriggerResults>                 & h
 			    << l1Prescl[itrig] << std::endl;           
     }
 
-    L1EvtCnt++;
-    
-    if (_Debug) std::cout << "%L1Info -- Done with routine" << std::endl;                                                                                      
+    //    L1EvtCnt++;
+    if (_Debug) std::cout << "%L1Info -- Done with routine" << std::endl;                                                                         
+
   } // l1results.isValid
   else { if (_Debug) std::cout << "%L1Results -- No Trigger Result" << std::endl;}                                                                             
 
