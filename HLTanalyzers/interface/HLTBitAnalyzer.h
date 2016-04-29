@@ -90,7 +90,7 @@ private:
   edm::EDGetTokenT<edm::TriggerResults>                  hltresultsToken_;
   edm::EDGetTokenT<GenEventInfoProduct>                  genEventInfoToken_;
 
-  const edm::EDGetTokenT<GlobalAlgBlkBxCollection> l1resultsToken_;    
+  edm::EDGetTokenT<GlobalAlgBlkBxCollection> l1resultsToken_;    
   /*
   edm::EDGetTokenT<l1extra::L1MuonParticleCollection>    l1extramuToken_;
   edm::EDGetTokenT<l1extra::L1EmParticleCollection>      l1extraemiToken_, l1extraemnToken_;

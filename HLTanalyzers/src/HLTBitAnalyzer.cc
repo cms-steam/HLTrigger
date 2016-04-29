@@ -82,7 +82,7 @@ HLTBitAnalyzer::HLTBitAnalyzer(edm::ParameterSet const& conf)  :
   l1extramhtToken_ = consumes<l1extra::L1EtMissParticleCollection>(m_l1extramht);
   */
   
-  //  l1resultsToken_ = consumes<edm::GlobalAlgBlkBxCollection>(l1results_);
+  l1resultsToken_ = consumes<GlobalAlgBlkBxCollection>(l1results_);
   //  gtReadoutRecordToken_ = consumes<L1GlobalTriggerReadoutRecord>(gtReadoutRecord_);
   /*
   gtObjectMapToken_ = consumes<L1GlobalTriggerObjectMapRecord>(gtObjectMap_);
@@ -162,7 +162,7 @@ void HLTBitAnalyzer::analyze(edm::Event const& iEvent, edm::EventSetup const& iS
   getCollection( iEvent, missing, l1extmet,        m_l1extramet,       l1extrametToken_,      kL1extmet );
   getCollection( iEvent, missing, l1extmht,        m_l1extramht,       l1extramhtToken_,      kL1extmht );
   */
-  //  getCollection( iEvent, missing, l1results, l1results_, l1resultsToken_, kl1results) ;
+  getCollection( iEvent, missing, l1results, l1results_, l1resultsToken_, kL1GtRR) ;
   //  getCollection( iEvent, missing, l1GtRR,          gtReadoutRecord_,   gtReadoutRecordToken_, kL1GtRR );
   /*
   getCollection( iEvent, missing, l1GtOMRec,       gtObjectMap_,       gtObjectMapToken_,     kL1GtOMRec );
