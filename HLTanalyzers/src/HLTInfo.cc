@@ -22,7 +22,7 @@
 HLTInfo::HLTInfo() {
 
   //set parameter defaults 
-  _Debug=true;
+  _Debug=false;
   _OR_BXes=false;
   UnpackBxInEvent=1;
 }
@@ -219,8 +219,6 @@ void HLTInfo::analyze(const edm::Handle<edm::TriggerResults>                 & h
 	
 	TString l1trigName= std::string (algoBitToName[itrig]); 
 	std::string l1triggername= std::string (algoBitToName[itrig]); 
-
-	if (_Debug) std::cerr << "bit: " << index << "\tname: " << l1trigName << std::endl;    
 
 	HltTree->Branch(l1trigName,l1flag+itrig,l1trigName+"/I");                    
         HltTree->Branch(l1trigName+"_Prescl",l1Prescl+itrig,l1trigName+"_Prescl/I"); 
