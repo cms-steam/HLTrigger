@@ -14,12 +14,19 @@
 
 #include "DataFormats/Common/interface/Handle.h"
 
+// L1 results
+#include "CondFormats/DataRecord/interface/L1TUtmTriggerMenuRcd.h"
+#include "CondFormats/L1TObjects/interface/L1TUtmAlgorithm.h"
+#include "CondFormats/L1TObjects/interface/L1TUtmTriggerMenu.h"
+#include "DataFormats/L1TGlobal/interface/GlobalAlgBlk.h"
+#include "DataFormats/L1TGlobal/interface/GlobalExtBlk.h"
+/*
 #include "DataFormats/L1GlobalTrigger/interface/L1GlobalTriggerReadoutRecord.h"
 #include "DataFormats/L1GlobalTrigger/interface/L1GlobalTriggerReadoutSetupFwd.h"
 #include "DataFormats/L1GlobalTrigger/interface/L1GlobalTriggerObjectMapRecord.h"
 #include "DataFormats/L1GlobalTrigger/interface/L1GlobalTriggerObjectMapFwd.h"
 #include "DataFormats/L1GlobalTrigger/interface/L1GlobalTriggerObjectMap.h"
-
+*/
 #include "SimDataFormats/GeneratorProducts/interface/GenEventInfoProduct.h"
 #include "SimDataFormats/PileupSummaryInfo/interface/PileupSummaryInfo.h"  
 #include "HLTrigger/HLTanalyzers/interface/HLTMCtruth.h" 
@@ -30,6 +37,10 @@
   * $Date: November 2006
   * $Revision: 
   * \author P. Bargassa - Rice U.
+
+  * $Date: April 2016 
+  * $Revision:   
+  * \author G. Karapostoli - ULB
   */
 
 class HLTBitAnalyzer : public edm::EDAnalyzer {
@@ -56,6 +67,7 @@ private:
   RECOVertex  vrt_analysisOffline0_;
 
   edm::InputTag hltresults_,genEventInfo_;
+  /*
   std::string l1extramc_, l1extramu_;
   edm::InputTag m_l1extramu;
   edm::InputTag m_l1extraemi;
@@ -66,9 +78,10 @@ private:
   edm::InputTag m_l1extrataujet;
   edm::InputTag m_l1extramet;
   edm::InputTag m_l1extramht;
-
   edm::InputTag gtReadoutRecord_,gtObjectMap_; 
   edm::InputTag gctBitCounts_,gctRingSums_;
+  */
+  edm::InputTag l1results_;
 
   edm::InputTag mctruth_,simhits_; 
   edm::InputTag VertexTagOffline0_;
@@ -76,6 +89,9 @@ private:
 
   edm::EDGetTokenT<edm::TriggerResults>                  hltresultsToken_;
   edm::EDGetTokenT<GenEventInfoProduct>                  genEventInfoToken_;
+
+  edm::EDGetTokenT<GlobalAlgBlkBxCollection> l1resultsToken_;    
+  /*
   edm::EDGetTokenT<l1extra::L1MuonParticleCollection>    l1extramuToken_;
   edm::EDGetTokenT<l1extra::L1EmParticleCollection>      l1extraemiToken_, l1extraemnToken_;
   edm::EDGetTokenT<l1extra::L1JetParticleCollection>     l1extrajetcToken_, l1extrajetfToken_, l1extrajetToken_, l1extrataujetToken_;
@@ -85,7 +101,7 @@ private:
   edm::EDGetTokenT<L1GlobalTriggerObjectMapRecord>       gtObjectMapToken_;
   edm::EDGetTokenT< L1GctHFBitCountsCollection >         gctBitCountsToken_;
   edm::EDGetTokenT< L1GctHFRingEtSumsCollection >        gctRingSumsToken_;
-
+  */
   edm::EDGetTokenT<reco::CandidateView>                     mctruthToken_;
   edm::EDGetTokenT<std::vector<SimTrack> >                  simtracksToken_;
   edm::EDGetTokenT<std::vector<SimVertex> >                 simverticesToken_;
