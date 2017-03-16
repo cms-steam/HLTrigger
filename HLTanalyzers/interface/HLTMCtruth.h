@@ -43,7 +43,8 @@ private:
   float ptEleMax,ptMuMax;
 
   // input variables
-  bool _Debug,_Gen;
+  bool _Debug;
+  bool _Gen;
 
 };
 

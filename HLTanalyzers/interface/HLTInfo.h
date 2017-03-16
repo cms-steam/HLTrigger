@@ -19,10 +19,10 @@
 #include "DataFormats/L1Trigger/interface/Tau.h"
 #include "DataFormats/L1Trigger/interface/EtSum.h"
 
-namespace edm {
-  class ConsumesCollector;
-  class ParameterSet;
-}
+//namespace edm {
+//  class ConsumesCollector;
+//  class ParameterSet;
+//}
 
 /** \class HLTInfo
   *  
@@ -95,7 +95,7 @@ private:
   float l1totalht_eta;
   float l1totalht_phi;
 
-  TString * algoBitToName;
+  TString *algoBitToName;
   std::vector<std::string> dummyBranches_;
 
   std::unique_ptr<HLTPrescaleProvider> hltPrescaleProvider_;

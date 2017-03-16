@@ -21,7 +21,6 @@ bool getCollection(const edm::Event & event, std::vector<MissingCollectionInfo> 
     missing.push_back(&name);
     handle.clear();
 
-    cout << "Missing collection " << name->encode() << endl;
   }
   return valid;
 }

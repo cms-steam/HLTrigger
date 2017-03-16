@@ -1,7 +1,6 @@
 #include "HLTrigger/HLTanalyzers/interface/HLTMCtruth.h"
 
 HLTMCtruth::HLTMCtruth() {
-
   //set parameter defaults 
   _Gen=false;
   _Debug=false;
@@ -54,7 +53,6 @@ void HLTMCtruth::setup(const edm::ParameterSet& pSet, TTree* HltTree) {
   HltTree->Branch("MCptMuMax",&ptMuMax,"MCptMuMax/F");
   HltTree->Branch("NPUTrueBX0",&npubx0, "NPUTrueBX0/I");
   HltTree->Branch("NPUgenBX0",&npuvertbx0, "NPUgenBX0/I");
-
 }
 
 /* **Analyze the event** */

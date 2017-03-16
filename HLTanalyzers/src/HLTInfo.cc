@@ -16,7 +16,7 @@ HLTInfo::HLTInfo() {
 template <class T>
 void get_max_l1_info(const BXVector<T> obj_list, float &ptmax, float &etamax, float &phimax){
   ptmax  = -999.;
-  etamax  = -999.;
+  etamax = -999.;
   phimax = -999.;
 
   //std::cout << "Size of list = " << obj_list.size(0) << std::endl;
