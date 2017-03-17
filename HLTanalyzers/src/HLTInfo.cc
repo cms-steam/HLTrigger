@@ -14,7 +14,7 @@ HLTInfo::HLTInfo() {
 }
 
 template <class T>
-void get_max_l1_info(const BXVector<T> obj_list, float &ptmax, float &etamax, float &phimax){
+void get_max_l1_info(const BXVector<T> obj_list, float &ptmax, float &etamax, float &phimax, bool isIsolated = false){
   ptmax  = -999.;
   etamax = -999.;
   phimax = -999.;
@@ -25,6 +25,7 @@ void get_max_l1_info(const BXVector<T> obj_list, float &ptmax, float &etamax, fl
 
   for(typename std::vector< T >::const_iterator obj = obj_list.begin(0); obj != obj_list.end(0); obj++){
     if(obj->pt() < ptmax) continue;
+    if(isIsolated && ! obj->hwIso()) continue;
     ptmax = obj->pt();
     etamax = obj->eta();
     phimax = obj->phi();
@@ -76,21 +77,24 @@ void HLTInfo::setup(const edm::ParameterSet& pSet, TTree* HltTree) {
   l1flag = new bool[kMaxL1Flag];
   l1Prescl = new int[kMaxL1Flag];
 
-  l1mumax_pt    = -1.;
-  l1mumax_eta   = -1.;
-  l1mumax_phi   = -1.;
-  l1egmax_pt    = -1.;
-  l1egmax_eta   = -1.;
-  l1egmax_phi   = -1.;
-  l1jetmax_pt   = -1.;
-  l1jetmax_eta  = -1.;
-  l1jetmax_phi  = -1.;
-  l1taumax_pt   = -1.;
-  l1taumax_eta  = -1.;
-  l1taumax_phi  = -1.;
-  l1totalet_pt  = -1.;
-  l1totalet_eta = -1.;
-  l1totalet_phi = -1.;
+  l1mumax_pt     = -1.;
+  l1mumax_eta    = -1.;
+  l1mumax_phi    = -1.;
+  l1egmax_pt     = -1.;
+  l1egmax_eta    = -1.;
+  l1egmax_phi    = -1.;
+  l1isoegmax_pt  = -1.;
+  l1isoegmax_eta = -1.;
+  l1isoegmax_phi = -1.;
+  l1jetmax_pt    = -1.;
+  l1jetmax_eta   = -1.;
+  l1jetmax_phi   = -1.;
+  l1taumax_pt    = -1.;
+  l1taumax_eta   = -1.;
+  l1taumax_phi   = -1.;
+  l1totalet_pt   = -1.;
+  l1totalet_eta  = -1.;
+  l1totalet_phi  = -1.;
  
   algoBitToName = new TString[512];
 }
@@ -215,6 +219,10 @@ void HLTInfo::analyze(const edm::Handle<edm::TriggerResults>      & hltresults,
       HltTree->Branch("L1egamma_eta",&l1egmax_eta,"L1egamma_eta/F");
       HltTree->Branch("L1egamma_phi",&l1egmax_phi,"L1egamma_phi/F");
 
+      HltTree->Branch("L1isoegamma_pt",&l1isoegmax_pt,"L1isoegamma_pt/F");
+      HltTree->Branch("L1isoegamma_eta",&l1isoegmax_eta,"L1isoegamma_eta/F");
+      HltTree->Branch("L1isoegamma_phi",&l1isoegmax_phi,"L1isoegamma_phi/F");
+
       HltTree->Branch("L1jet_pt",&l1jetmax_pt,"L1jet_pt/F");
       HltTree->Branch("L1jet_eta",&l1jetmax_eta,"L1jet_eta/F");
       HltTree->Branch("L1jet_phi",&l1jetmax_phi,"L1jet_phi/F");
@@ -255,10 +263,11 @@ void HLTInfo::analyze(const edm::Handle<edm::TriggerResults>      & hltresults,
 
     if(_Debug) std::cout << "Now find the ranking single L1 objects and save them" << std::endl;
 
-    get_max_l1_info(*l1muons,  l1mumax_pt,  l1mumax_eta,  l1mumax_phi);
-    get_max_l1_info(*l1egamma, l1egmax_pt,  l1egmax_eta,  l1egmax_phi);
-    get_max_l1_info(*l1jets,   l1jetmax_pt, l1jetmax_eta, l1jetmax_phi);
-    get_max_l1_info(*l1taus,   l1taumax_pt, l1taumax_eta, l1taumax_phi);
+    get_max_l1_info(*l1muons,     l1mumax_pt,    l1mumax_eta,    l1mumax_phi);
+    get_max_l1_info(*l1egamma,    l1egmax_pt,    l1egmax_eta,    l1egmax_phi);
+    get_max_l1_info(*l1isoegamma, l1isoegmax_pt, l1isoegmax_eta, l1isoegmax_phi, true);
+    get_max_l1_info(*l1jets,      l1jetmax_pt,   l1jetmax_eta,   l1jetmax_phi);
+    get_max_l1_info(*l1taus,      l1taumax_pt,   l1taumax_eta,   l1taumax_phi);
 
     if(_Debug) std::cout << "Finished with the objects, now the sums " << std::endl;
 

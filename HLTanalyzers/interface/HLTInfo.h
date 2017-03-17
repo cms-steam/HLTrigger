@@ -79,6 +79,10 @@ private:
   float l1egmax_eta;
   float l1egmax_phi;
 
+  float l1isoegmax_pt;
+  float l1isoegmax_eta;
+  float l1isoegmax_phi;
+
   float l1jetmax_pt;
   float l1jetmax_eta;
   float l1jetmax_phi;

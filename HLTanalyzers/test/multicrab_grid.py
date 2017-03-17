@@ -106,13 +106,15 @@ listOfSamples = [
    ]
 
 if __name__ == '__main__':
-   from CRABAPI.RawCommand import crabCommand
-
-   def submit(config):
-       res = crabCommand('submit', config = config)
 
    from CRABClient.UserUtilities import config
    config = config()
+
+   from CRABAPI.RawCommand import crabCommand
+   from multiprocessing import Process
+
+   def submit(config):
+       res = crabCommand('submit', config = config)
 
    config.General.workArea = 'crab_'+name
    config.General.transferLogs = True
@@ -149,4 +151,9 @@ if __name__ == '__main__':
       config.Data.unitsPerJob = eventsPerJob[sample]
       config.Data.outputDatasetTag = sample
       #config.Data.lumiMask = mask
-      submit(config)
+      p = Process(target=submit, args=(config,))
+      p.start()
+      p.join()
+
+      if sample == 'SingleNu':
+         config.JobType.pyCfgParams.remove('isZeroBias=True')
