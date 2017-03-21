@@ -33,7 +33,10 @@ while(restart):
         restart = False
 
 ###Import the content of hltGetConfiguration
-from hlt import *
+if options.isMC:
+    from hlt_MC import *
+else:
+    from hlt_data import *
 
 ### STEAM Filters ###
 
@@ -97,6 +100,7 @@ process.hltbitanalysis.l1egamma       = cms.InputTag('hltGtStage2Digis', 'EGamma
 process.hltbitanalysis.l1jets         = cms.InputTag('hltGtStage2Digis', 'Jet', process.name_())
 process.hltbitanalysis.l1taus         = cms.InputTag('hltGtStage2Digis', 'Tau', process.name_())
 process.hltbitanalysis.l1etsums       = cms.InputTag('hltGtStage2Digis', 'EtSum', process.name_())
+process.hltbitanalysis.isL1MuHighQual = cms.bool(True)
 process.hltbitanalysis.RunParameters.HistogramFile = cms.untracked.string('hltbits.root')                           
 process.hltbitanalysis.RunParameters.isData = cms.bool(not options.isMC)
 process.hltbitanalysis.RunParameters.Debug = cms.bool(False)

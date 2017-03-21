@@ -65,8 +65,13 @@ private:
 
   HLTInfo();
 
+  template <class T>
+  void get_max_l1_info(const BXVector<T> obj_list, float &ptmax, float &etamax, float &phimax, bool isIsolated = false, bool isMuon = false);
+
   // Tree variables
   int L1EvtCnt,HltEvtCnt;
+
+  bool _isL1MuHighQual;
 
   bool *trigflag, *l1flag;
   int *trigPrescl, *l1Prescl; 
@@ -92,12 +97,11 @@ private:
   float l1taumax_phi;
 
   float l1totalet_pt;
-  float l1totalet_eta;
-  float l1totalet_phi;
-
   float l1totalht_pt;
-  float l1totalht_eta;
-  float l1totalht_phi;
+
+  float l1missinght_pt;
+  float l1missinght_eta;
+  float l1missinght_phi;
 
   TString *algoBitToName;
   std::vector<std::string> dummyBranches_;

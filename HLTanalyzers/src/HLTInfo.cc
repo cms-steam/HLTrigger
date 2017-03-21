@@ -11,10 +11,11 @@
 HLTInfo::HLTInfo() {
   //set parameter defaults 
   _Debug=false;
+  _isL1MuHighQual=true;
 }
 
 template <class T>
-void get_max_l1_info(const BXVector<T> obj_list, float &ptmax, float &etamax, float &phimax, bool isIsolated = false){
+void HLTInfo::get_max_l1_info(const BXVector<T> obj_list, float &ptmax, float &etamax, float &phimax, bool isIsolated, bool isMuon){
   ptmax  = -999.;
   etamax = -999.;
   phimax = -999.;
@@ -26,6 +27,11 @@ void get_max_l1_info(const BXVector<T> obj_list, float &ptmax, float &etamax, fl
   for(typename std::vector< T >::const_iterator obj = obj_list.begin(0); obj != obj_list.end(0); obj++){
     if(obj->pt() < ptmax) continue;
     if(isIsolated && ! obj->hwIso()) continue;
+
+    if(isMuon && obj->hwQual() < 4) continue;
+    if(isMuon && _isL1MuHighQual && obj->hwQual() < 10) continue;
+    //if(isMuon) cout << obj->hwQual() << endl;
+
     ptmax = obj->pt();
     etamax = obj->eta();
     phimax = obj->phi();
@@ -56,6 +62,8 @@ void HLTInfo::beginRun(const edm::Run& run, const edm::EventSetup& c){
 void HLTInfo::setup(const edm::ParameterSet& pSet, TTree* HltTree) {
 
   processName_ = pSet.getParameter<std::string>("HLTProcessName") ;
+
+  _isL1MuHighQual = pSet.getParameter<bool>("isL1MuHighQual");
 
   edm::ParameterSet myHltParams = pSet.getParameter<edm::ParameterSet>("RunParameters") ;
   std::vector<std::string> parameterNames = myHltParams.getParameterNames() ;
@@ -93,8 +101,10 @@ void HLTInfo::setup(const edm::ParameterSet& pSet, TTree* HltTree) {
   l1taumax_eta   = -1.;
   l1taumax_phi   = -1.;
   l1totalet_pt   = -1.;
-  l1totalet_eta  = -1.;
-  l1totalet_phi  = -1.;
+  l1totalht_pt   = -1.;
+  l1missinght_pt   = -1.;
+  l1missinght_eta  = -1.;
+  l1missinght_phi  = -1.;
  
   algoBitToName = new TString[512];
 }
@@ -232,12 +242,11 @@ void HLTInfo::analyze(const edm::Handle<edm::TriggerResults>      & hltresults,
       HltTree->Branch("L1tau_phi",&l1taumax_phi,"L1tau_phi/F");
 
       HltTree->Branch("L1TotalEt_pt",&l1totalet_pt,"L1TotalEt_pt/F");
-      HltTree->Branch("L1TotalEt_eta",&l1totalet_eta,"L1TotalEt_eta/F");
-      HltTree->Branch("L1TotalEt_phi",&l1totalet_phi,"L1TotalEt_phi/F");
-
       HltTree->Branch("L1TotalHt_pt",&l1totalht_pt,"L1TotalHt_pt/F");
-      HltTree->Branch("L1TotalHt_eta",&l1totalht_eta,"L1TotalHt_eta/F");
-      HltTree->Branch("L1TotalHt_phi",&l1totalht_phi,"L1TotalHt_phi/F");
+
+      HltTree->Branch("L1MissingHt_pt",&l1missinght_pt,"L1MissingHt_pt/F");
+      HltTree->Branch("L1MissingHt_eta",&l1missinght_eta,"L1MissingHt_eta/F");
+      HltTree->Branch("L1MissingHt_phi",&l1missinght_phi,"L1MissingHt_phi/F");
 
       L1EvtCnt++;     
     } // end l1evtCnt=0
@@ -263,24 +272,25 @@ void HLTInfo::analyze(const edm::Handle<edm::TriggerResults>      & hltresults,
 
     if(_Debug) std::cout << "Now find the ranking single L1 objects and save them" << std::endl;
 
-    get_max_l1_info(*l1muons,     l1mumax_pt,    l1mumax_eta,    l1mumax_phi);
-    get_max_l1_info(*l1egamma,    l1egmax_pt,    l1egmax_eta,    l1egmax_phi);
-    get_max_l1_info(*l1isoegamma, l1isoegmax_pt, l1isoegmax_eta, l1isoegmax_phi, true);
-    get_max_l1_info(*l1jets,      l1jetmax_pt,   l1jetmax_eta,   l1jetmax_phi);
-    get_max_l1_info(*l1taus,      l1taumax_pt,   l1taumax_eta,   l1taumax_phi);
+    get_max_l1_info(*l1muons,  l1mumax_pt,    l1mumax_eta,    l1mumax_phi, false, true);
+    get_max_l1_info(*l1egamma, l1egmax_pt,    l1egmax_eta,    l1egmax_phi);
+    get_max_l1_info(*l1egamma, l1isoegmax_pt, l1isoegmax_eta, l1isoegmax_phi, true);
+    get_max_l1_info(*l1jets,   l1jetmax_pt,   l1jetmax_eta,   l1jetmax_phi);
+    get_max_l1_info(*l1taus,   l1taumax_pt,   l1taumax_eta,   l1taumax_phi);
 
     if(_Debug) std::cout << "Finished with the objects, now the sums " << std::endl;
 
     for(std::vector<l1t::EtSum>::const_iterator sum_obj = l1etsums->begin(0); sum_obj != l1etsums->end(); sum_obj++){
       if(sum_obj->getType() == l1t::EtSum::EtSumType::kTotalEt){
 	l1totalet_pt  = sum_obj->pt();
-	l1totalet_eta = sum_obj->eta();
-	l1totalet_phi = sum_obj->phi();
       }
       else if(sum_obj->getType() == l1t::EtSum::EtSumType::kTotalHt){
 	l1totalht_pt  = sum_obj->pt();
-	l1totalht_eta = sum_obj->eta();
-	l1totalht_phi = sum_obj->phi();
+      }
+      else if(sum_obj->getType() == l1t::EtSum::EtSumType::kMissingHt){
+	l1missinght_pt  = sum_obj->pt();
+	l1missinght_eta = sum_obj->eta();
+	l1missinght_phi = sum_obj->phi();
       }
     }
 

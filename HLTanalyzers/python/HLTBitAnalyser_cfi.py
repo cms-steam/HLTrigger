@@ -9,6 +9,8 @@ hltbitanalysis = cms.EDAnalyzer("HLTBitAnalyzer",
     l1taus    = cms.InputTag("hltGtDigis::HLT"),
     l1etsums  = cms.InputTag("hltGtDigis::HLT"),
 
+    isL1MuHighQual = cms.bool(True),
+
     hltresults            = cms.InputTag("TriggerResults::HLT"),
     HLTProcessName        = cms.string("HLT"),
 
