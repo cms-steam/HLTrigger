@@ -1,6 +1,6 @@
 
-name = 'HLTRates_testcleanup_2017mar16B'
-steam_dir = 'MarioTests/'
+name = 'HLTRates_testcleanup_2017mar24'
+steam_dir = 'Summer16_FlatPU28to62'
 running_options = ['isMC=True','doL1Prescales=True','L1PrescaleColumn=4']
 runATCAF = False
 
@@ -131,7 +131,6 @@ if __name__ == '__main__':
    config.Data.splitting = 'EventAwareLumiBased'
    config.Data.publication = False
    config.Data.totalUnits = nevents
-   config.Data.ignoreLocality = not runATCAF #Required for CAF submission
    config.Data.outLFNDirBase = '/store/group/dpg_trigger/comm_trigger/TriggerStudiesGroup/STEAM/' + steam_dir + name
 
    config.Site.storageSite = 'T2_CH_CERN'
@@ -139,6 +138,7 @@ if __name__ == '__main__':
    if runATCAF :
       config.Site.whitelist = ['T3_CH_CERN_CAF']
       config.Site.ignoreGlobalBlacklist = True
+      config.Data.ignoreLocality = True
 
    listOfSamples.reverse()
    for sample in listOfSamples:

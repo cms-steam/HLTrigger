@@ -26,9 +26,9 @@ void HLTInfo::get_max_l1_info(const BXVector<T> obj_list, float &ptmax, float &e
 
   for(typename std::vector< T >::const_iterator obj = obj_list.begin(0); obj != obj_list.end(0); obj++){
     if(obj->pt() < ptmax) continue;
-    if(isIsolated && ! obj->hwIso()) continue;
+    if(isIsolated && !obj->hwIso()) continue;
 
-    if(isMuon && obj->hwQual() < 4) continue;
+    if(isMuon && obj->hwQual() < 8) continue;
     if(isMuon && _isL1MuHighQual && obj->hwQual() < 10) continue;
     //if(isMuon) cout << obj->hwQual() << endl;
 

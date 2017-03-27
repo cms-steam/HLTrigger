@@ -119,11 +119,14 @@ void HLTBitAnalyzer::analyze(edm::Event const& iEvent, edm::EventSetup const& iS
   getCollection( iEvent, missing, l1jets,       l1jets_,       l1jetsToken_);
   getCollection( iEvent, missing, l1taus,       l1taus_,       l1tausToken_);
   getCollection( iEvent, missing, l1etsums,     l1etsums_,     l1etsumsToken_);
-  getCollection( iEvent, missing, mctruth,      mctruth_,      mctruthToken_);
-  getCollection( iEvent, missing, simTracks,    simhits_,      simtracksToken_);
-  getCollection( iEvent, missing, simVertices,  simhits_,      simverticesToken_);
-  getCollection( iEvent, missing, genEventInfo, genEventInfo_, genEventInfoToken_);
-  getCollection( iEvent, missing, pupInfo,      pileupInfo_,   pileupInfoToken_);
+
+  if(!_isData){
+    getCollection( iEvent, missing, mctruth,      mctruth_,      mctruthToken_);
+    getCollection( iEvent, missing, simTracks,    simhits_,      simtracksToken_);
+    getCollection( iEvent, missing, simVertices,  simhits_,      simverticesToken_);
+    getCollection( iEvent, missing, genEventInfo, genEventInfo_, genEventInfoToken_);
+    getCollection( iEvent, missing, pupInfo,      pileupInfo_,   pileupInfoToken_);
+  }
 
   double ptHat = -1.;
   double weight = -1.;

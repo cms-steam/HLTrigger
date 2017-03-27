@@ -5,14 +5,21 @@ import sys
 import os
 
 nBunches = 1.
-nPU_min = 30.
-nPU_max = 50.
-nEventsMax = 1000000
+nPU_min = 10.
+nPU_max = 25.
+nEventsMax = 3000000
+
+isMC = (sys.argv[1] == "True")
+print "Am I running on MC? -> ", isMC
+
+out_dir = 'results/'
+out_root = sys.argv[2]
+print "The output file name will be ", out_dir + out_root
 
 ROOT.gStyle.SetOptStat(0)
 
-dir_path = sys.argv[1]
-
+dir_path = sys.argv[3]
+print "I will look for the trees in ", dir_path
 print "Get the trees from eos"
 eos_command = "eos ls " + dir_path + "/ | grep root | awk '{print \"rfio:/eos/cms" + dir_path + "/\"$0 }'"
 file_list = os.popen(eos_command).read()
@@ -33,6 +40,7 @@ def get_scale_factor(_nZeroBias, _nBunches):
 print "Preparing plotting stuff"
 nbins_mupt = 131
 nbins_jetpt = 250
+nbins_sums = 512
 
 h_l1rate = dict()
 h_l1rate["MuPt"]      = ROOT.TH1F("MuPt","L1_SingleMu p_{T} distribution", nbins_mupt, -0.5, 130.5)
@@ -49,6 +57,11 @@ h_l1rate["nEGErVsPt"] = ROOT.TH1F("nEGErVsPt","L1_SingleEGER rate vs p_{T} thres
 h_l1rate["nEGVsEta"]  = ROOT.TH1F("nEGVsEta","L1_SingleEG16 rate vs #eta", 24, -2.4, 2.4)
 h_l1rate["nEGVsPhi"]  = ROOT.TH1F("nEGVsPhi","L1_SingleEG16 rate vs #phi", 31, -3.14, 3.14)
 
+h_l1rate["IsoEGErPt"]    = ROOT.TH1F("IsoEGErPt","L1_SingleIsoEGER p_{T} distribution", nbins_mupt, -0.5, 130.5)
+h_l1rate["nIsoEGErVsPt"] = ROOT.TH1F("nIsoEGErVsPt","L1_SingleIsoEGER rate vs p_{T} threshold", nbins_mupt, -0.5, 130.5)
+h_l1rate["nIsoEGVsEta"]  = ROOT.TH1F("nIsoEGVsEta","L1_SingleIsoEG16 rate vs #eta", 24, -2.4, 2.4)
+h_l1rate["nIsoEGVsPhi"]  = ROOT.TH1F("nIsoEGVsPhi","L1_SingleIsoEG16 rate vs #phi", 31, -3.14, 3.14)
+
 h_l1rate["JetPt"]        = ROOT.TH1F("JetPt","L1_SingleJet E_{T} distribution", nbins_jetpt, -0.5, 250.5)
 h_l1rate["JetCPt"]       = ROOT.TH1F("JetCPt","L1_SingleJetCentral E_{T} distribution", nbins_jetpt, -0.5, 250.5)
 h_l1rate["nJetVsPt"]     = ROOT.TH1F("nJetVsPt","L1_SingleJet rate vs E_{T} threshold", nbins_jetpt, -0.5, 250.5)
@@ -64,6 +77,11 @@ h_l1rate["nTauErVsPt"]    = ROOT.TH1F("nTauErVsPt","L1_SingleTauER rate vs E_{T}
 h_l1rate["nTau32VsEta"]   = ROOT.TH1F("nTau32VsEta","L1_SingleTau32 rate vs #eta", 45, -4., 4.)
 h_l1rate["nTauEr32VsPhi"] = ROOT.TH1F("nTauEr32VsPhi","L1_SingleTau32ER rate vs #phi", 31, -3.14, 3.14)
 
+h_l1rate["ETT"]   = ROOT.TH1F("ETT","L1_ETT distribution", nbins_sums, -0.5, 511.5)
+h_l1rate["nETT"]  = ROOT.TH1F("nETT","L1_ETT rate vs ETT threshold", nbins_sums, -0.5, 511.5)
+h_l1rate["HTT"]   = ROOT.TH1F("HTT","L1_HTT distribution", nbins_sums, -0.5, 511.5)
+h_l1rate["nHTT"]  = ROOT.TH1F("nHTT","L1_HTT rate vs HTT threshold", nbins_sums, -0.5, 511.5)
+
 h_l1rate["MuPt"].GetXaxis().SetTitle("p_{T} [GeV]")
 h_l1rate["MuErPt"].GetXaxis().SetTitle("p_{T} [GeV]")
 h_l1rate["nMuVsPt"].GetXaxis().SetTitle("p_{T} [GeV]")
@@ -72,14 +90,22 @@ h_l1rate["EGPt"].GetXaxis().SetTitle("p_{T} [GeV]")
 h_l1rate["EGErPt"].GetXaxis().SetTitle("p_{T} [GeV]")
 h_l1rate["nEGVsPt"].GetXaxis().SetTitle("p_{T} [GeV]")
 h_l1rate["nEGErVsPt"].GetXaxis().SetTitle("p_{T} [GeV]")
+h_l1rate["IsoEGErPt"].GetXaxis().SetTitle("p_{T} [GeV]")
+h_l1rate["nIsoEGErVsPt"].GetXaxis().SetTitle("p_{T} [GeV]")
 h_l1rate["JetPt"].GetXaxis().SetTitle("p_{T} [GeV]")
 h_l1rate["JetCPt"].GetXaxis().SetTitle("p_{T} [GeV]")
 h_l1rate["nJetVsPt"].GetXaxis().SetTitle("p_{T} [GeV]")
 h_l1rate["TauErPt"].GetXaxis().SetTitle("p_{T} [GeV]")
 h_l1rate["nTauErVsPt"].GetXaxis().SetTitle("p_{T} [GeV]")
 
+h_l1rate["ETT"].GetXaxis().SetTitle("ETT [GeV]")
+h_l1rate["nETT"].GetXaxis().SetTitle("ETT [GeV]")
+h_l1rate["HTT"].GetXaxis().SetTitle("HTT [GeV]")
+h_l1rate["nHTT"].GetXaxis().SetTitle("HTT [GeV]")
+
 h_l1rate["nMuVsEta"].GetXaxis().SetTitle("#eta")
 h_l1rate["nEGVsEta"].GetXaxis().SetTitle("#eta")
+h_l1rate["nIsoEGVsEta"].GetXaxis().SetTitle("#eta")
 h_l1rate["nJet32VsEta"].GetXaxis().SetTitle("#eta")
 h_l1rate["nJet64VsEta"].GetXaxis().SetTitle("#eta")
 h_l1rate["nJet120VsEta"].GetXaxis().SetTitle("#eta")
@@ -87,16 +113,21 @@ h_l1rate["nTau32VsEta"].GetXaxis().SetTitle("#eta")
 
 h_l1rate["nMuVsPhi"].GetXaxis().SetTitle("#phi")
 h_l1rate["nEGVsPhi"].GetXaxis().SetTitle("#phi")
+h_l1rate["nIsoEGVsPhi"].GetXaxis().SetTitle("#phi")
 h_l1rate["nJet32VsPhi"].GetXaxis().SetTitle("#phi")
 h_l1rate["nJet64VsPhi"].GetXaxis().SetTitle("#phi")
 h_l1rate["nJet120VsPhi"].GetXaxis().SetTitle("#phi")
 h_l1rate["nTauEr32VsPhi"].GetXaxis().SetTitle("#phi")
 
 for hname in h_l1rate:
-    h_l1rate[hname].SetLineColor(ROOT.kRed)
+    if isMC:
+        h_l1rate[hname].SetLineColor(ROOT.kRed)
+        h_l1rate[hname].SetMarkerColor(ROOT.kRed)
+    else:
+        h_l1rate[hname].SetLineColor(ROOT.kBlue)
+        h_l1rate[hname].SetMarkerColor(ROOT.kBlue)
     h_l1rate[hname].SetMarkerStyle(21)
     
-
 nZeroBias = 0.
 
 print "Starting the loop over the events"
@@ -108,9 +139,10 @@ for jentry in xrange(mytree.GetEntriesFast()):
     if nb <=0:
         continue
 
-    npubx0 = mytree.NPUgenBX0
-    if npubx0 < nPU_min or npubx0 > nPU_max:
-        continue
+    if isMC:
+        npubx0 = mytree.NPUgenBX0
+        if npubx0 < nPU_min or npubx0 > nPU_max:
+            continue
 
     nZeroBias += 1.
 
@@ -129,6 +161,10 @@ for jentry in xrange(mytree.GetEntriesFast()):
     maxeg_eta = mytree.L1egamma_eta
     maxeg_phi = mytree.L1egamma_phi
 
+    maxisoeg_pt  = mytree.L1isoegamma_pt
+    maxisoeg_eta = mytree.L1isoegamma_eta
+    maxisoeg_phi = mytree.L1isoegamma_phi
+
     maxjet_pt  = mytree.L1jet_pt
     maxjet_eta = mytree.L1jet_eta
     maxjet_phi = mytree.L1jet_phi
@@ -136,6 +172,9 @@ for jentry in xrange(mytree.GetEntriesFast()):
     maxtau_pt  = mytree.L1tau_pt
     maxtau_eta = mytree.L1tau_eta
     maxtau_phi = mytree.L1tau_phi
+
+    maxett = mytree.L1TotalEt_pt
+    maxhtt = mytree.L1TotalHt_pt
 
     ##Fill the histos
     h_l1rate["MuPt"].Fill(maxmu_pt)
@@ -146,10 +185,15 @@ for jentry in xrange(mytree.GetEntriesFast()):
         h_l1rate["MuErPt"].Fill(maxmu_pt)
     if(abs(maxeg_eta) <= 2.1):
         h_l1rate["EGErPt"].Fill(maxeg_pt)
+    if(abs(maxisoeg_eta) <= 2.1):
+        h_l1rate["IsoEGErPt"].Fill(maxisoeg_pt)
     if(abs(maxjet_eta) <= 2.4):
         h_l1rate["JetCPt"].Fill(maxjet_pt)
     if(abs(maxtau_eta) <= 2.4):
         h_l1rate["TauErPt"].Fill(maxtau_pt)
+
+    h_l1rate["ETT"].Fill(maxett)
+    h_l1rate["HTT"].Fill(maxhtt)
 
     ##Fill the histos for rate vs threshold
     for ptcut in xrange(nbins_mupt):
@@ -163,11 +207,21 @@ for jentry in xrange(mytree.GetEntriesFast()):
             if abs(maxeg_eta) <= 2.1 :
                 h_l1rate["nEGErVsPt"].Fill(ptcut)
 
+        if maxisoeg_pt >= ptcut :
+            if abs(maxisoeg_eta) <= 2.1 :
+                h_l1rate["nIsoEGErVsPt"].Fill(ptcut)
+
     for ptcut in xrange(nbins_jetpt):
         if maxjet_pt >= ptcut :
             h_l1rate["nJetVsPt"].Fill(ptcut)
         if maxtau_pt >= ptcut and abs(maxtau_eta) <= 2.4 :
             h_l1rate["nTauErVsPt"].Fill(ptcut)
+
+    for ptcut in xrange(nbins_sums):
+        if maxett >= ptcut :
+            h_l1rate["nETT"].Fill(ptcut)
+        if maxhtt >= ptcut :
+            h_l1rate["nHTT"].Fill(ptcut)
 
     #Fill the histos for rate vs eta
     if maxmu_pt >= 16. :
@@ -181,6 +235,12 @@ for jentry in xrange(mytree.GetEntriesFast()):
             h_l1rate["nEGVsEta"].Fill(maxeg_eta)
         if maxeg_phi > -5. :
             h_l1rate["nEGVsPhi"].Fill(maxeg_phi)
+
+    if maxisoeg_pt >= 16. :
+        if maxisoeg_eta > -5. :
+            h_l1rate["nIsoEGVsEta"].Fill(maxisoeg_eta)
+        if maxisoeg_phi > -5. :
+            h_l1rate["nIsoEGVsPhi"].Fill(maxisoeg_phi)
 
     if maxjet_pt >= 32. :
         if maxjet_eta > -5. :
@@ -210,10 +270,10 @@ for jentry in xrange(mytree.GetEntriesFast()):
 print "End of event loop"
 
 
-if not os.path.exists("results"):
-    os.makedirs("results")
+if not os.path.exists(out_dir):
+    os.makedirs(out_dir)
 
-fOut_histos = ROOT.TFile("results/l1rates_histos.root","RECREATE")
+fOut_histos = ROOT.TFile(out_dir + out_root,"RECREATE")
 scale_factor_std = get_scale_factor(nZeroBias,nBunches)
 
 for hname in h_l1rate:
@@ -226,7 +286,7 @@ for hname in h_l1rate:
     if "Pt" in hname:
         c1.SetLogy()
     h_l1rate[hname].Draw("PE")
-    c1.SaveAs("results/" + hname + ".gif")
+    c1.SaveAs(out_dir + hname + ".gif")
 
 fOut_histos.Close()
 
