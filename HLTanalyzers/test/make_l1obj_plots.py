@@ -5,8 +5,8 @@ import sys
 import os
 
 nBunches = 1.
-nPU_min = 10.
-nPU_max = 25.
+nPU_min = 13.
+nPU_max = 28.
 nEventsMax = 3000000
 
 isMC = (sys.argv[1] == "True")
@@ -50,12 +50,13 @@ h_l1rate["nMuErVsPt"] = ROOT.TH1F("nMuErVsPt","L1_SingleMuER rate vs p_{T} thres
 h_l1rate["nMuVsEta"]  = ROOT.TH1F("nMuVsEta","L1_SingleMu16 rate vs #eta", 24, -2.4, 2.4)
 h_l1rate["nMuVsPhi"]  = ROOT.TH1F("nMuVsPhi","L1_SingleMu16 rate vs #phi", 31, -3.14, 3.14)
 
-h_l1rate["EGPt"]      = ROOT.TH1F("EGPt","L1_SingleEG p_{T} distribution", nbins_mupt, -0.5, 130.5)
-h_l1rate["EGErPt"]    = ROOT.TH1F("EGErPt","L1_SingleEGER p_{T} distribution", nbins_mupt, -0.5, 130.5)
-h_l1rate["nEGVsPt"]   = ROOT.TH1F("nEGVsPt","L1_SingleEG rate vs p_{T} threshold", nbins_mupt, -0.5, 130.5)
-h_l1rate["nEGErVsPt"] = ROOT.TH1F("nEGErVsPt","L1_SingleEGER rate vs p_{T} threshold", nbins_mupt, -0.5, 130.5)
-h_l1rate["nEGVsEta"]  = ROOT.TH1F("nEGVsEta","L1_SingleEG16 rate vs #eta", 24, -2.4, 2.4)
-h_l1rate["nEGVsPhi"]  = ROOT.TH1F("nEGVsPhi","L1_SingleEG16 rate vs #phi", 31, -3.14, 3.14)
+h_l1rate["EGPt"]       = ROOT.TH1F("EGPt","L1_SingleEG p_{T} distribution", nbins_mupt, -0.5, 130.5)
+h_l1rate["EGErPt"]     = ROOT.TH1F("EGErPt","L1_SingleEGER p_{T} distribution", nbins_mupt, -0.5, 130.5)
+h_l1rate["nEGVsPt"]    = ROOT.TH1F("nEGVsPt","L1_SingleEG rate vs p_{T} threshold", nbins_mupt, -0.5, 130.5)
+h_l1rate["nEGErVsPt"]  = ROOT.TH1F("nEGErVsPt","L1_SingleEGER rate vs p_{T} threshold", nbins_mupt, -0.5, 130.5)
+h_l1rate["nEG16VsEta"] = ROOT.TH1F("nEG16VsEta","L1_SingleEG16 rate vs #eta", 24, -2.4, 2.4)
+h_l1rate["nEG40VsEta"] = ROOT.TH1F("nEG40VsEta","L1_SingleEG40 rate vs #eta", 24, -2.4, 2.4)
+h_l1rate["nEGVsPhi"]   = ROOT.TH1F("nEGVsPhi","L1_SingleEG16 rate vs #phi", 31, -3.14, 3.14)
 
 h_l1rate["IsoEGErPt"]    = ROOT.TH1F("IsoEGErPt","L1_SingleIsoEGER p_{T} distribution", nbins_mupt, -0.5, 130.5)
 h_l1rate["nIsoEGErVsPt"] = ROOT.TH1F("nIsoEGErVsPt","L1_SingleIsoEGER rate vs p_{T} threshold", nbins_mupt, -0.5, 130.5)
@@ -104,7 +105,8 @@ h_l1rate["HTT"].GetXaxis().SetTitle("HTT [GeV]")
 h_l1rate["nHTT"].GetXaxis().SetTitle("HTT [GeV]")
 
 h_l1rate["nMuVsEta"].GetXaxis().SetTitle("#eta")
-h_l1rate["nEGVsEta"].GetXaxis().SetTitle("#eta")
+h_l1rate["nEG16VsEta"].GetXaxis().SetTitle("#eta")
+h_l1rate["nEG40VsEta"].GetXaxis().SetTitle("#eta")
 h_l1rate["nIsoEGVsEta"].GetXaxis().SetTitle("#eta")
 h_l1rate["nJet32VsEta"].GetXaxis().SetTitle("#eta")
 h_l1rate["nJet64VsEta"].GetXaxis().SetTitle("#eta")
@@ -232,9 +234,13 @@ for jentry in xrange(mytree.GetEntriesFast()):
 
     if maxeg_pt >= 16. :
         if maxeg_eta > -5. :
-            h_l1rate["nEGVsEta"].Fill(maxeg_eta)
+            h_l1rate["nEG16VsEta"].Fill(maxeg_eta)
         if maxeg_phi > -5. :
             h_l1rate["nEGVsPhi"].Fill(maxeg_phi)
+
+    if maxeg_pt >= 40. :
+        if maxeg_eta > -5. :
+            h_l1rate["nEG40VsEta"].Fill(maxeg_eta)
 
     if maxisoeg_pt >= 16. :
         if maxisoeg_eta > -5. :

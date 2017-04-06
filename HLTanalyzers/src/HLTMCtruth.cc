@@ -20,24 +20,24 @@ void HLTMCtruth::setup(const edm::ParameterSet& pSet, TTree* HltTree) {
 
   const int kMaxMcTruth = 10000;
   mcpid = new int[kMaxMcTruth];
-  mcstatus = new int[kMaxMcTruth];
-  mcvx = new float[kMaxMcTruth];
-  mcvy = new float[kMaxMcTruth];
-  mcvz = new float[kMaxMcTruth];
-  mcpt = new float[kMaxMcTruth];
-  mceta = new float[kMaxMcTruth];
-  mcphi = new float[kMaxMcTruth];
+  //mcstatus = new int[kMaxMcTruth];
+  //mcvx = new float[kMaxMcTruth];
+  //mcvy = new float[kMaxMcTruth];
+  //mcvz = new float[kMaxMcTruth];
+  //mcpt = new float[kMaxMcTruth];
+  //mceta = new float[kMaxMcTruth];
+  //mcphi = new float[kMaxMcTruth];
   
   // MCtruth-specific branches of the tree 
   HltTree->Branch("NMCpart",&nmcpart,"NMCpart/I");
-  HltTree->Branch("MCpid",mcpid,"MCpid[NMCpart]/I");
-  HltTree->Branch("MCstatus",mcstatus,"MCstatus[NMCpart]/I");
-  HltTree->Branch("MCvtxX",mcvx,"MCvtxX[NMCpart]/F");
-  HltTree->Branch("MCvtxY",mcvy,"MCvtxY[NMCpart]/F");
-  HltTree->Branch("MCvtxZ",mcvz,"MCvtxZ[NMCpart]/F");
-  HltTree->Branch("MCpt",mcpt,"MCpt[NMCpart]/F");
-  HltTree->Branch("MCeta",mceta,"MCeta[NMCpart]/F");
-  HltTree->Branch("MCphi",mcphi,"MCphi[NMCpart]/F");
+  //HltTree->Branch("MCpid",mcpid,"MCpid[NMCpart]/I");
+  //HltTree->Branch("MCstatus",mcstatus,"MCstatus[NMCpart]/I");
+  //HltTree->Branch("MCvtxX",mcvx,"MCvtxX[NMCpart]/F");
+  //HltTree->Branch("MCvtxY",mcvy,"MCvtxY[NMCpart]/F");
+  //HltTree->Branch("MCvtxZ",mcvz,"MCvtxZ[NMCpart]/F");
+  //HltTree->Branch("MCpt",mcpt,"MCpt[NMCpart]/F");
+  //HltTree->Branch("MCeta",mceta,"MCeta[NMCpart]/F");
+  //HltTree->Branch("MCphi",mcphi,"MCphi[NMCpart]/F");
   HltTree->Branch("MCPtHat",&pthatf,"MCPtHat/F");
   HltTree->Branch("MCWeight",&weightf,"MCWeight/F");
   HltTree->Branch("MCWeightSign",&weightsignf,"MCWeightSign/F");
@@ -76,8 +76,8 @@ void HLTMCtruth::analyze(const edm::Handle<reco::CandidateView> & mctruth,
   int zee = 0;
   int zmumu = 0;
 
-  ptEleMax = -999.0;
-  ptMuMax  = -999.0;
+  ptEleMax = -999.;
+  ptMuMax  = -999.;
   pthatf   = pthat;
   weightf   = weight;
   weightsignf   = (weight > 0) ? 1. : -1.;
@@ -129,22 +129,22 @@ void HLTMCtruth::analyze(const edm::Handle<reco::CandidateView> & mctruth,
       const reco::Candidate & p = (*mctruth)[i];
 
       mcpid[nmc] = p.pdgId();
-      mcstatus[nmc] = p.status();
-      mcpt[nmc] = p.pt();
-      mceta[nmc] = p.eta();
-      mcphi[nmc] = p.phi();
-      mcvx[nmc] = p.vx();
-      mcvy[nmc] = p.vy();
-      mcvz[nmc] = p.vz();
+      //mcpt[nmc] = p.pt();
+      //mcstatus[nmc] = p.status();
+      //mceta[nmc] = p.eta();
+      //mcphi[nmc] = p.phi();
+      ///mcvx[nmc] = p.vx();
+      //mcvy[nmc] = p.vy();
+      //mcvz[nmc] = p.vz();
 
-      if ((mcpid[nmc]==24)||(mcpid[nmc]==-24)) { // Checking W -> e/mu nu
+      if ( abs(mcpid[nmc]) ==24) { // Checking W -> e/mu nu
 	size_t idg = p.numberOfDaughters();
 	for (size_t j=0; j != idg; ++j){
 	  const reco::Candidate & d = *p.daughter(j);
 	  if ((d.pdgId()==11)||(d.pdgId()==-11)){wel += 1;}
 	  if ((d.pdgId()==13)||(d.pdgId()==-13)){wmu += 1;}
-	  // 	    if ( (abs(d.pdgId())!=24) && ((mcpid[nmc])*(d.pdgId())>0) ) 
-	  // 	      {std::cout << "Wrong sign between mother-W and daughter !" << std::endl;}
+	  //if ( (abs(d.pdgId())!=24) && ((mcpid[nmc])*(d.pdgId())>0) ) 
+	  //{std::cout << "Wrong sign between mother-W and daughter !" << std::endl;}
 	}
       }
       if (mcpid[nmc]==23) { // Checking Z -> 2 e/mu
@@ -161,10 +161,10 @@ void HLTMCtruth::analyze(const edm::Handle<reco::CandidateView> & mctruth,
       // Set-up flags, based on Pythia-generator information, for avoiding double-counting events when
       // using both pp->{e,mu}X AND QCD samples
       //if (((mcpid[nmc]==13)||(mcpid[nmc]==-13))&&(mcpt[nmc]>2.5)) {mu3 += 1;} // Flag for muons with pT > 2.5 GeV/c
-      if (((mcpid[nmc]==11)||(mcpid[nmc]==-11))&&(mcpt[nmc]>2.5)) {el3 += 1;} // Flag for electrons with pT > 2.5 GeV/c
+      if (((mcpid[nmc]==11)||(mcpid[nmc]==-11))&&(p.pt()>2.5)) {el3 += 1;} // Flag for electrons with pT > 2.5 GeV/c
 
       if (mcpid[nmc]==-5) {mab += 1;} // Flag for bbar
-      if (mcpid[nmc]==5) {mbb += 1;} // Flag for b
+      if (mcpid[nmc]==5)  {mbb += 1;} // Flag for b
 
       if ((mcpid[nmc]==13)||(mcpid[nmc]==-13))
 	{if (p.pt()>ptMuMax) {ptMuMax=p.pt();} } // Save max pt of generated Muons
