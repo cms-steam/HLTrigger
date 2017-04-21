@@ -83,8 +83,8 @@ if not options.isZeroBias and options.isMC :
 
 if options.doL1Prescales :
     process.load('L1Trigger.L1TGlobal.hackConditions_cff')
-    process.L1TGlobalPrescalesVetos.PrescaleXMLFile = cms.string('UGT_BASE_RS_PRESCALES_v214.xml')
-    process.L1TGlobalPrescalesVetos.FinOrMaskXMLFile = cms.string('UGT_BASE_RS_FINOR_MASK_v91.xml')
+    process.L1TGlobalPrescalesVetos.PrescaleXMLFile = cms.string('UGT_RS_CLOBS_UGT_BASE_RS_PRESCALES_v226_CONF.xml')
+    process.L1TGlobalPrescalesVetos.FinOrMaskXMLFile = cms.string('UGT_RS_CLOBS_UGT_BASE_RS_FINOR_MASK_v91_CONF.xml')
     process.simGtStage2Digis.AlgorithmTriggersUnmasked = cms.bool(False)
     process.simGtStage2Digis.AlgorithmTriggersUnprescaled = cms.bool(False)
     process.simGtStage2Digis.PrescaleSet = cms.uint32(options.L1PrescaleColumn)
