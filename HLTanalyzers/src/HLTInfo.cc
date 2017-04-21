@@ -272,27 +272,40 @@ void HLTInfo::analyze(const edm::Handle<edm::TriggerResults>      & hltresults,
 
     if(_Debug) std::cout << "Now find the ranking single L1 objects and save them" << std::endl;
 
-    get_max_l1_info(*l1muons,  l1mumax_pt,    l1mumax_eta,    l1mumax_phi, false, true);
-    get_max_l1_info(*l1egamma, l1egmax_pt,    l1egmax_eta,    l1egmax_phi);
-    get_max_l1_info(*l1egamma, l1isoegmax_pt, l1isoegmax_eta, l1isoegmax_phi, true);
-    get_max_l1_info(*l1jets,   l1jetmax_pt,   l1jetmax_eta,   l1jetmax_phi);
-    get_max_l1_info(*l1taus,   l1taumax_pt,   l1taumax_eta,   l1taumax_phi);
+    // Get highest pt object for each collection //
+    if(l1muons.isValid()) get_max_l1_info(*l1muons,  l1mumax_pt,    l1mumax_eta,    l1mumax_phi, false, true);
+    else if(_Debug)       std::cout <<  "ERROR: L1 Objects -- L1Muons not found!" << std::endl;
+
+    if(l1egamma.isValid()) {
+      get_max_l1_info(*l1egamma, l1egmax_pt,    l1egmax_eta,    l1egmax_phi);
+      get_max_l1_info(*l1egamma, l1isoegmax_pt, l1isoegmax_eta, l1isoegmax_phi, true);
+    }
+    else if(_Debug) std::cout <<  "ERROR: L1 Objects -- L1EGammas not found!" << std::endl;
+    
+    if(l1jets.isValid()) get_max_l1_info(*l1jets,   l1jetmax_pt,   l1jetmax_eta,   l1jetmax_phi);
+    else if(_Debug)      std::cout <<  "ERROR: L1 Objects -- L1Jets not found!" << std::endl;
+    
+    if(l1taus.isValid()) get_max_l1_info(*l1taus,   l1taumax_pt,   l1taumax_eta,   l1taumax_phi);
+    else if(_Debug)      std::cout <<  "ERROR: L1 Objects --  L1Taus not found!" << std::endl;
 
     if(_Debug) std::cout << "Finished with the objects, now the sums " << std::endl;
 
-    for(std::vector<l1t::EtSum>::const_iterator sum_obj = l1etsums->begin(0); sum_obj != l1etsums->end(); sum_obj++){
-      if(sum_obj->getType() == l1t::EtSum::EtSumType::kTotalEt){
-	l1totalet_pt  = sum_obj->pt();
-      }
-      else if(sum_obj->getType() == l1t::EtSum::EtSumType::kTotalHt){
-	l1totalht_pt  = sum_obj->pt();
-      }
-      else if(sum_obj->getType() == l1t::EtSum::EtSumType::kMissingHt){
-	l1missinght_pt  = sum_obj->pt();
-	l1missinght_eta = sum_obj->eta();
-	l1missinght_phi = sum_obj->phi();
+    if(l1etsums.isValid()) {
+      for(std::vector<l1t::EtSum>::const_iterator sum_obj = l1etsums->begin(0); sum_obj != l1etsums->end(); sum_obj++){
+	if(sum_obj->getType() == l1t::EtSum::EtSumType::kTotalEt){
+	  l1totalet_pt  = sum_obj->pt();
+	}
+	else if(sum_obj->getType() == l1t::EtSum::EtSumType::kTotalHt){
+	  l1totalht_pt  = sum_obj->pt();
+	}
+	else if(sum_obj->getType() == l1t::EtSum::EtSumType::kMissingHt){
+	  l1missinght_pt  = sum_obj->pt();
+	  l1missinght_eta = sum_obj->eta();
+	  l1missinght_phi = sum_obj->phi();
+	}
       }
     }
+    else if(_Debug)      std::cout <<  "ERROR: L1 Objects --  L1Sums not found!" << std::endl;
 
     //    L1EvtCnt++;
     if (_Debug) std::cout << "%L1Info -- Done with routine" << std::endl;                                                                         
