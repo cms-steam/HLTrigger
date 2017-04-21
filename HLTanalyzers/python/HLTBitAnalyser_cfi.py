@@ -2,12 +2,12 @@ import FWCore.ParameterSet.Config as cms
 
 hltbitanalysis = cms.EDAnalyzer("HLTBitAnalyzer",
     ### Trigger objects
-    l1results = cms.InputTag("hltGtDigis::HLT"),                            
-    l1muons   = cms.InputTag("hltGtDigis::HLT"),
-    l1egamma  = cms.InputTag("hltGtDigis::HLT"),
-    l1jets    = cms.InputTag("hltGtDigis::HLT"),
-    l1taus    = cms.InputTag("hltGtDigis::HLT"),
-    l1etsums  = cms.InputTag("hltGtDigis::HLT"),
+    l1results = cms.InputTag("hltGtStage2Digis", ""      , "HLT"),                            
+    l1muons   = cms.InputTag("hltGtStage2Digis", "Muon"  , "HLT"),
+    l1egamma  = cms.InputTag("hltGtStage2Digis", "EGamma", "HLT"),
+    l1jets    = cms.InputTag("hltGtStage2Digis", "Jet"   , "HLT"),
+    l1taus    = cms.InputTag("hltGtStage2Digis", "Tau"   , "HLT"),
+    l1etsums  = cms.InputTag("hltGtStage2Digis", "EtSum" , "HLT"),
 
     isL1MuHighQual = cms.bool(True),
 
