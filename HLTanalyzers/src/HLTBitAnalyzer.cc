@@ -101,7 +101,7 @@ void HLTBitAnalyzer::analyze(edm::Event const& iEvent, edm::EventSetup const& iS
   edm::Handle<l1t::EGammaBxCollection>  l1egamma;
   edm::Handle<l1t::JetBxCollection>     l1jets;
   edm::Handle<l1t::TauBxCollection>     l1taus;
-  edm::Handle<l1t::EtSumBxCollection>  l1etsums;
+  edm::Handle<l1t::EtSumBxCollection>   l1etsums;
 
   edm::Handle<reco::CandidateView>               mctruth;
   edm::Handle<GenEventInfoProduct>               genEventInfo;
@@ -149,6 +149,7 @@ void HLTBitAnalyzer::analyze(edm::Event const& iEvent, edm::EventSetup const& iS
   }
 
   // run the analysis, passing required event fragments
+  if(_Debug) std::cout << "Launch HLTInfo analysis" << std::endl;
   hlt_analysis_.analyze(hltresults,
 			l1results,
 			l1muons,
