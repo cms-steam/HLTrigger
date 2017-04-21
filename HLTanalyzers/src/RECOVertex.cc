@@ -1,10 +1,3 @@
-#include <iostream>
-#include <sstream>
-#include <istream>
-#include <fstream>
-#include <iomanip>
-#include <stdlib.h>
-#include <string.h>
 
 #include "HLTrigger/HLTanalyzers/interface/RECOVertex.h"
 #include "HLTMessages.h"
@@ -83,8 +76,6 @@ void RECOVertex::setup(const edm::ParameterSet& pSet, TTree* HltTree, std::strin
   TString br_recoVrtNdof = "recoVrtNdof";
   br_recoVrtNdof.Append(vertexType);
   HltTree->Branch(br_recoVrtNdof,  VertexCand_ndof,       "recoVrtNdof[NVrtx]/F");
-
-
 
 }
 

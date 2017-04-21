@@ -59,6 +59,8 @@ HLTAnalyzer::HLTAnalyzer(edm::ParameterSet const& conf) :
     firstLumi_          = conf.getUntrackedParameter<int> ("firstLumi",0);
     lastLumi_           = conf.getUntrackedParameter<int> ("lastLumi",-1);
     towerThreshold_     = conf.getParameter<double>("caloTowerThreshold");
+
+
        
     // keep this separate from l1extramc_ as needed by FastSim:
     //    This is purposefully done this way to allow FastSim to run with OpenHLT: 
@@ -103,6 +105,13 @@ HLTAnalyzer::HLTAnalyzer(edm::ParameterSet const& conf) :
     PFTauTightCone_      = conf.getParameter<edm::InputTag> ("HLTPFTauTightCone");
     _MinPtChargedHadrons = conf.getParameter<double>("minPtChargedHadronsForTaus");
     _MinPtGammas         = conf.getParameter<double>("minPtGammassForTaus");
+
+    //L1 objects
+    l1muons_  = conf.getParameter<edm::InputTag> ("l1muons");
+    l1egamma_ = conf.getParameter<edm::InputTag> ("l1egamma");
+    l1jets_   = conf.getParameter<edm::InputTag> ("l1jets");
+    l1taus_   = conf.getParameter<edm::InputTag> ("l1taus");
+    l1etsums_ = conf.getParameter<edm::InputTag> ("l1etsums");
 
     PFJets_          = conf.getParameter<edm::InputTag> ("HLTPFJet");
     
@@ -230,6 +239,12 @@ HLTAnalyzer::HLTAnalyzer(edm::ParameterSet const& conf) :
 
     muonToken_ = consumes<reco::MuonCollection>(muon_);
     pfmuonToken_ = consumes<reco::PFCandidateCollection>(pfmuon_);
+
+    l1muonsToken_           = consumes<l1t::MuonBxCollection>(l1muons_);
+    l1egammaToken_          = consumes<l1t::EGammaBxCollection>(l1egamma_);
+    l1jetsToken_            = consumes<l1t::JetBxCollection>(l1jets_);
+    l1tausToken_            = consumes<l1t::TauBxCollection>(l1taus_);
+    l1etsumsToken_          = consumes<l1t::EtSumBxCollection>(l1etsums_);
 
     L2TauToken_ = consumes<reco::CaloJetCollection>(L2Tau_);
     HLTTauToken_ = consumes<reco::HLTTauCollection>(HLTTau_);
@@ -434,19 +449,13 @@ void HLTAnalyzer::analyze(edm::Event const& iEvent, edm::EventSetup const& iSetu
     edm::Handle<edm::TriggerResults>                  hltresults;
 
     edm::Handle<l1extra::L1MuonParticleCollection>    l1extmu;  
-    /*
-    edm::Handle<l1extra::L1EmParticleCollection>      l1extemi, l1extemn;
-    edm::Handle<l1extra::L1MuonParticleCollection>    l1extmu;
-    edm::Handle<l1extra::L1JetParticleCollection>     l1extjetc, l1extjetf, l1extjet, l1exttaujet;
-    //edm::Handle<l1extra::L1JetParticleCollection>     l1extjetc, l1extjetf, l1exttaujet;
-    edm::Handle<l1extra::L1EtMissParticleCollection>  l1extmet,l1extmht;
-    */
     edm::Handle<GlobalAlgBlkBxCollection> l1results;
-    //    edm::Handle<L1GlobalTriggerReadoutRecord>         l1GtRR;
-    /*
-    edm::Handle< L1GctHFBitCountsCollection >         gctBitCounts ;
-    edm::Handle< L1GctHFRingEtSumsCollection >        gctRingSums ;
-    */
+    edm::Handle<l1t::MuonBxCollection>    l1muons;
+    edm::Handle<l1t::EGammaBxCollection>  l1egamma;
+    edm::Handle<l1t::JetBxCollection>     l1jets;
+    edm::Handle<l1t::TauBxCollection>     l1taus;
+    edm::Handle<l1t::EtSumBxCollection>  l1etsums;
+
     edm::Handle<reco::RecoChargedCandidateCollection> mucands2, mucands3, munovtxcands2;
     edm::Handle<reco::RecoChargedCandidateCollection> oniaPixelCands, oniaTrackCands;
     edm::Handle<reco::VertexCollection>               dimuvtxcands3;
@@ -624,24 +633,14 @@ void HLTAnalyzer::analyze(edm::Event const& iEvent, edm::EventSetup const& iSetu
     getCollection( iEvent, missing, theRecoPFTauDiscrAgainstElec,          RecoPFTauAgainstElec_,               RecoPFTauAgainstElecToken_,               ktheRecoPFTauDiscrAgainstElec);
     getCollection( iEvent, missing, hltresults,      hltresults_,        hltresultsToken_,        kHltresults );
 
+    getCollection( iEvent, missing, l1muons,      l1muons_,      l1muonsToken_,kL1extmu ) ;
+    getCollection( iEvent, missing, l1egamma,     l1egamma_,     l1egammaToken_,kL1extmu) ;
+    getCollection( iEvent, missing, l1jets,       l1jets_,       l1jetsToken_,kL1extmu) ;
+    getCollection( iEvent, missing, l1taus,       l1taus_,       l1tausToken_,kL1extmu) ;
+    getCollection( iEvent, missing, l1etsums,     l1etsums_,     l1etsumsToken_,kL1extmu) ;
+
     getCollection( iEvent, missing, l1extmu,         m_l1extramu,        l1extramuToken_,         kL1extmu );    
-    /*
-    getCollection( iEvent, missing, l1extemi,        m_l1extraemi,       l1extraemiToken_,        kL1extemi );
-    getCollection( iEvent, missing, l1extemn,        m_l1extraemn,       l1extraemnToken_,        kL1extemn );
-    getCollection( iEvent, missing, l1extmu,         m_l1extramu,        l1extramuToken_,         kL1extmu );
-    getCollection( iEvent, missing, l1extjetc,       m_l1extrajetc,      l1extrajetcToken_,       kL1extjetc );
-    getCollection( iEvent, missing, l1extjetf,       m_l1extrajetf,      l1extrajetfToken_,       kL1extjetf );
-    getCollection( iEvent, missing, l1extjet,        m_l1extrajet,       l1extrajetToken_,        kL1extjet );
-    getCollection( iEvent, missing, l1exttaujet,     m_l1extrataujet,    l1extrataujetToken_,     kL1exttaujet );
-    getCollection( iEvent, missing, l1extmet,        m_l1extramet,       l1extrametToken_,        kL1extmet );
-    getCollection( iEvent, missing, l1extmht,        m_l1extramht,       l1extramhtToken_,        kL1extmht );
-    */
-    //    getCollection( iEvent, missing, l1results, l1results_, l1resultsToken_, kL1results );
-		   //    getCollection( iEvent, missing, l1GtRR,          gtReadoutRecord_,   gtReadoutRecordToken_,   kL1GtRR );
-    /*
-    getCollection( iEvent, missing, gctBitCounts,    gctBitCounts_,      gctBitCountsToken_,      kL1GctBitCounts );
-    getCollection( iEvent, missing, gctRingSums,     gctRingSums_,       gctRingSumsToken_,       kL1GctRingSums );
-    */
+
     getCollection( iEvent, missing, mctruth,         mctruth_,           mctruthToken_,           kMctruth );
     getCollection( iEvent, missing, simTracks,       simhits_,           simTracksToken_,         kSimhit );
     getCollection( iEvent, missing, simVertices,     simhits_,           simVerticesToken_,       kSimhit );
@@ -879,23 +878,12 @@ void HLTAnalyzer::analyze(edm::Event const& iEvent, edm::EventSetup const& iSetu
 
     hlt_analysis_.analyze(
                           hltresults,
-			  /*
-                          l1extemi,
-                          l1extemn,
-                          l1extmu,
-                          l1extjetc,
-                          l1extjetf,
-			  l1extjet,
-                          l1exttaujet,
-                          l1extmet,
-                          l1extmht,
-			  */
 			  l1results,
-			  //                          l1GtRR,
-			  /*
-                          gctBitCounts,
-                          gctRingSums,
-			  */
+			  l1muons,
+			  l1egamma,
+			  l1jets,
+			  l1taus,
+			  l1etsums,
                           iSetup,
                           iEvent,
                           HltTree);
