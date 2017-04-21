@@ -4,18 +4,17 @@
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/EventSetup.h"
-#include <vector>
 #include "TChain.h"
 
 #include "DataFormats/VertexReco/interface/Vertex.h" 
 #include "DataFormats/VertexReco/interface/VertexFwd.h" 
-
 
 /** \class RECOVertex
   *  
   * $Date: Dec 2009
   * $Revision: 
   */
+
 class RECOVertex {
 public:
   RECOVertex(); 

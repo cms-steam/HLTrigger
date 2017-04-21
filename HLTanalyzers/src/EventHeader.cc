@@ -1,25 +1,18 @@
-#include <iostream>
-#include <sstream>
-#include <istream>
-#include <fstream>
-#include <iomanip>
-#include <stdlib.h>
-#include <string.h>
 
+#include<iostream>
 #include "HLTrigger/HLTanalyzers/interface/EventHeader.h"
 
 EventHeader::EventHeader() :
-  fEvent( 0 ),
-  fLumiBlock( -1 ),
-  fRun( -1 ),
-  fBx( -1 ),
-  fOrbit( -1 ),
-  fAvgInstDelLumi( -999. ),
-  _Debug( false )
+  fEvent(0),
+  fLumiBlock(-1),
+  fRun(-1),
+  fBx(-1),
+  fOrbit(-1),
+  fAvgInstDelLumi(-999.),
+  _Debug(false)
 { }
 
 EventHeader::~EventHeader() {
-
 }
 
 /*  Setup the analysis to put the branch-variables into the tree. */

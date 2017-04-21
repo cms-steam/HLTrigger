@@ -30,13 +30,11 @@
 
 #include "DataFormats/Common/interface/Handle.h"
 
-/*
-#include "DataFormats/L1GlobalTrigger/interface/L1GlobalTriggerReadoutRecord.h"
-#include "DataFormats/L1GlobalTrigger/interface/L1GlobalTriggerReadoutSetupFwd.h"
-#include "DataFormats/L1GlobalTrigger/interface/L1GlobalTriggerObjectMapRecord.h"
-#include "DataFormats/L1GlobalTrigger/interface/L1GlobalTriggerObjectMapFwd.h"
-#include "DataFormats/L1GlobalTrigger/interface/L1GlobalTriggerObjectMap.h"
-*/
+#include "DataFormats/L1Trigger/interface/Muon.h"
+#include "DataFormats/L1Trigger/interface/EGamma.h"
+#include "DataFormats/L1Trigger/interface/Jet.h"
+#include "DataFormats/L1Trigger/interface/Tau.h"
+#include "DataFormats/L1Trigger/interface/EtSum.h"
 
 #include "CondFormats/DataRecord/interface/L1TUtmTriggerMenuRcd.h"
 #include "CondFormats/L1TObjects/interface/L1TUtmAlgorithm.h"
@@ -122,15 +120,12 @@ private:
   const edm::EDGetTokenT<GlobalAlgBlkBxCollection>       l1resultsToken_;
 
   edm::EDGetTokenT<l1extra::L1MuonParticleCollection>    l1extramuToken_;   
-  /*
-  edm::EDGetTokenT<l1extra::L1EmParticleCollection>      l1extraemiToken_, l1extraemnToken_;
-  edm::EDGetTokenT<l1extra::L1MuonParticleCollection>    l1extramuToken_;
-  edm::EDGetTokenT<l1extra::L1JetParticleCollection>     l1extrajetcToken_, l1extrajetfToken_, l1extrajetToken_, l1extrataujetToken_;
-  edm::EDGetTokenT<l1extra::L1EtMissParticleCollection>  l1extrametToken_,l1extramhtToken_;
-  edm::EDGetTokenT<L1GlobalTriggerReadoutRecord>         gtReadoutRecordToken_;
-  edm::EDGetTokenT< L1GctHFBitCountsCollection >         gctBitCountsToken_;
-  edm::EDGetTokenT< L1GctHFRingEtSumsCollection >        gctRingSumsToken_;
-  */
+  edm::EDGetTokenT<l1t::MuonBxCollection>           l1muonsToken_;    
+  edm::EDGetTokenT<l1t::EGammaBxCollection>         l1egammaToken_;    
+  edm::EDGetTokenT<l1t::JetBxCollection>            l1jetsToken_;    
+  edm::EDGetTokenT<l1t::TauBxCollection>            l1tausToken_;    
+  edm::EDGetTokenT<l1t::EtSumBxCollection>          l1etsumsToken_;    
+
   edm::EDGetTokenT<reco::RecoChargedCandidateCollection> MuCandTag2Token_, MuCandTag3Token_, MuNoVtxCandTag2Token_;
   edm::EDGetTokenT<reco::RecoChargedCandidateCollection> oniaPixelTagToken_, oniaTrackTagToken_;
   edm::EDGetTokenT<reco::VertexCollection>               DiMuVtxToken_;
@@ -254,18 +249,12 @@ private:
   edm::InputTag l1results_; 
 
   edm::InputTag m_l1extramu;   
-  /*
-  std::string l1extramc_, l1extramu_;
-  edm::InputTag m_l1extramu;
-  edm::InputTag m_l1extraemi;
-  edm::InputTag m_l1extraemn;
-  edm::InputTag m_l1extrajetc;
-  edm::InputTag m_l1extrajetf;
-  edm::InputTag m_l1extrajet;
-  edm::InputTag m_l1extrataujet;
-  edm::InputTag m_l1extramet;
-  edm::InputTag m_l1extramht;
-  */
+  edm::InputTag l1muons_;
+  edm::InputTag l1egamma_;
+  edm::InputTag l1jets_;
+  edm::InputTag l1taus_;
+  edm::InputTag l1etsums_;
+
   edm::InputTag pileupInfo_;
 
   edm::InputTag particleMapSource_,mctruth_,simhits_; 
