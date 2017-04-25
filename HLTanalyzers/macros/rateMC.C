@@ -369,15 +369,15 @@ TCut DefineCut(TString process, UInt_t minPU, UInt_t maxPU)
 
   if(process.Contains("QCD")) {
 
-    if(process.Contains("MuEnriched")) {
+    if(process.Contains("QCDMu")) {
       cut_GEN = "HLT_MuFilter_v1 && !(!HLT_BCToEFilter_v1 && HLT_EmFilter_v1)";
     }
 
-    else if(process.Contains("EMEnriched")) {
+    else if(process.Contains("QCDEM")) {
       cut_GEN = "!HLT_BCToEFilter_v1 && HLT_EmFilter_v1";
     }
 
-    else if( !process.Contains("170to300") && !process.Contains("300to470") && !process.Contains("470to600") ) {
+    else if( !process.Contains("QCD170") && !process.Contains("QCD300") && !process.Contains("QCD470") ) {
       cut_GEN = "!HLT_MuFilter_v1 && !(!HLT_BCToEFilter_v1 && HLT_EmFilter_v1)";
     }
 
