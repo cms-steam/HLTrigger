@@ -39,11 +39,43 @@ else:
     from hlt_data import *
 
 ### STEAM Filters ###
-
-# GEN-based PU filter
 if not options.isZeroBias and options.isMC :
+
+    # PU Filters #
+
+    # Define the EDFilters
     process.RemovePileUpDominatedEventsGen = cms.EDFilter("RemovePileUpDominatedEventsGen")
-    process.HLT_RemovePileUpDominatedEventsGen_v1 = cms.Path( process.HLTBeginSequence + process.RemovePileUpDominatedEventsGen + process.HLTEndSequence )
+
+    process.RemovePileUpDominatedEventsGenV2 = cms.EDFilter(
+        "RemovePileUpDominatedEventsGenV2",
+        fileListFolder = cms.string("/afs/cern.ch/user/s/sdonato/AFSwork/public/genJetPtHadPU_RunIISummer15GS_ak4GenJetsNoNu"),
+        genJets = cms.InputTag("ak4GenJetsNoNu"),
+        pileupSummaryInfos = cms.InputTag("addPileupInfo"),
+        )
+
+    process.RemovePileUpDominatedEvents = cms.EDFilter(
+        "RemovePileUpDominatedEvents",
+        genjets = cms.InputTag("ak4GenJetsNoNu"),
+        l1jets = cms.InputTag("hltGtStage2Digis","Jet"),
+        l1taujets = cms.InputTag("hltGtStage2Digis","Tau"),
+        l1muonjets = cms.InputTag("hltGtStage2Digis","Muon"),
+        l1egs = cms.InputTag("hltGtStage2Digis","EGamma"),
+        deltaR = cms.double(0.4),
+        minGenjetPt = cms.double(10),
+        )
+
+    # Define the Paths
+    process.HLT_RemovePileUpDominatedEventsGen_v1 = cms.Path( 
+        process.HLTBeginSequence + process.RemovePileUpDominatedEventsGen + process.HLTEndSequence 
+        )
+
+    process.HLT_RemovePileUpDominatedEventsGenV2_v1 = cms.Path( 
+        process.HLTBeginSequence + process.RemovePileUpDominatedEventsGenV2 + process.HLTEndSequence 
+        )
+
+    process.HLT_RemovePileUpDominatedEvents_v1 = cms.Path( 
+        process.HLTBeginSequence + process.RemovePileUpDominatedEvents + process.HLTEndSequence 
+        )
 
     # Add the particle filter as a fake trigger
     process.genParticlesForFilter = cms.EDProducer("GenParticleProducer",
