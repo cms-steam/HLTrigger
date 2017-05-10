@@ -13,10 +13,10 @@
 #include "TMath.h"
 //
 using namespace std;
-int    VERBOSE = 1; // full verbosity = 3
-bool   TEST    = false; // to test with NTEST entries per process
-int    NTEST   = 1000000;
-double CONVERT = 1e-36;
+Int_t    VERBOSE = 1; // full verbosity = 3
+Bool_t   TEST    = false; // to test with NTEST entries per process
+Int_t    NTEST   = 1000000;
+Double_t CONVERT = 1e-36;
 
 ///////////////////////
 // Declare functions //
