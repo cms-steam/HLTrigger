@@ -10,12 +10,15 @@ options.register('isMC', True, #default value
                  VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"")
 
 options.register('L1Menu', 'L1Menu_20170412', #default value
-                 VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"")
+                 VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.string,"")
 
 options.register('doL1Prescales', True, #default value
                  VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"")
 
 options.register('L1PrescaleColumn', 0, #default value
+                 VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"")
+
+options.register('nEvents', 0, #default value
                  VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"")
 
 options.parseArguments()
@@ -29,7 +32,7 @@ if options.doL1Prescales :
 restart = True
 while(restart):
     for el_idx,el in enumerate(sys.argv):
-        if ("isZeroBias" in el) or ("isMC" in el) or ("doL1Prescales" in el) or ("L1PrescaleColumn" in el):
+        if ("isZeroBias" in el) or ("isMC" in el) or ("doL1Prescales" in el) or ("L1PrescaleColumn" in el) or ("L1Menu" in el) or ("nEvents" in el):
             del sys.argv[el_idx]
             restart = True
             break
@@ -40,6 +43,9 @@ if options.isMC:
     from hlt_MC import *
 else:
     from hlt_data import *
+
+### Max events
+process.maxEvents.input = cms.untracked.int32( options.nEvents )
 
 ### STEAM Filters ###
 if not options.isZeroBias and options.isMC :
