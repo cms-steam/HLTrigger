@@ -33,7 +33,7 @@ Int_t    DefinePaths(vector<TString> &paths);
 // Main function //
 ///////////////////
 
-Int_t rate(UInt_t minPU=38, UInt_t maxPU=42, Double_t lumi=1.25e34, TString input="All")
+Int_t rate(UInt_t minPU=54, UInt_t maxPU=58, Double_t lumi=2.0e34, TString input="All")
 {
 
   // Define the chains
