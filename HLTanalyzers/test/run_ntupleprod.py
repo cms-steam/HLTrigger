@@ -9,10 +9,13 @@ options.register('isZeroBias', False, #default value
 options.register('isMC', True, #default value
                  VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"")
 
+options.register('L1Menu', 'L1Menu_20170412', #default value
+                 VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"")
+
 options.register('doL1Prescales', True, #default value
                  VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"")
 
-options.register('L1PrescaleColumn', 4, #default value
+options.register('L1PrescaleColumn', 0, #default value
                  VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"")
 
 options.parseArguments()
@@ -114,12 +117,22 @@ if not options.isZeroBias and options.isMC :
 ### END STEAM GEN Filters ###
 
 if options.doL1Prescales :
+
     process.load('L1Trigger.L1TGlobal.hackConditions_cff')
-    process.L1TGlobalPrescalesVetos.PrescaleXMLFile = cms.string('UGT_RS_CLOBS_UGT_BASE_RS_PRESCALES_v226_CONF.xml')
-    process.L1TGlobalPrescalesVetos.FinOrMaskXMLFile = cms.string('UGT_RS_CLOBS_UGT_BASE_RS_FINOR_MASK_v91_CONF.xml')
     process.simGtStage2Digis.AlgorithmTriggersUnmasked = cms.bool(False)
     process.simGtStage2Digis.AlgorithmTriggersUnprescaled = cms.bool(False)
     process.simGtStage2Digis.PrescaleSet = cms.uint32(options.L1PrescaleColumn)
+
+    # pick prescales/masks corresponding to L1 menu
+    if options.L1Menu=='L1Menu_20170412':
+        process.L1TGlobalPrescalesVetos.PrescaleXMLFile  = cms.string('prescale-slim.xml')
+        process.L1TGlobalPrescalesVetos.FinOrMaskXMLFile = cms.string('mask-slim.xml')
+    elif options.L1Menu=='L1Menu_2016_v10':
+        process.L1TGlobalPrescalesVetos.PrescaleXMLFile  = cms.string('UGT_RS_CLOBS_UGT_BASE_RS_PRESCALES_v226_CONF.xml')
+        process.L1TGlobalPrescalesVetos.FinOrMaskXMLFile = cms.string('UGT_RS_CLOBS_UGT_BASE_RS_FINOR_MASK_v91_CONF.xml')
+    else:
+        process.L1TGlobalPrescalesVetos.PrescaleXMLFile  = cms.string('UGT_RS_CLOBS_UGT_BASE_RS_PRESCALES_v226_CONF.xml')
+        process.L1TGlobalPrescalesVetos.FinOrMaskXMLFile = cms.string('UGT_RS_CLOBS_UGT_BASE_RS_FINOR_MASK_v91_CONF.xml')        
 
 process.DQMOutput.remove(process.dqmOutput)
 
