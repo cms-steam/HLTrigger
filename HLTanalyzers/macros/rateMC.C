@@ -13,10 +13,10 @@
 #include "TMath.h"
 //
 using namespace std;
-int    VERBOSE = 1; // full verbosity = 3
-bool   TEST    = false; // to test with NTEST entries per process
-int    NTEST   = 1000000;
-double CONVERT = 1e-36;
+Int_t    VERBOSE = 1; // full verbosity = 3
+Bool_t   TEST    = false; // to test with NTEST entries per process
+Int_t    NTEST   = 1000000;
+Double_t CONVERT = 1e-36;
 
 ///////////////////////
 // Declare functions //
@@ -33,7 +33,7 @@ Int_t    DefinePaths(vector<TString> &paths);
 // Main function //
 ///////////////////
 
-Int_t rate(UInt_t minPU=38, UInt_t maxPU=42, Double_t lumi=1.25e34, TString input="All")
+Int_t rate(UInt_t minPU=54, UInt_t maxPU=58, Double_t lumi=2.0e34, TString input="All")
 {
 
   // Define the chains
