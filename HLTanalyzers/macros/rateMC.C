@@ -190,29 +190,23 @@ Int_t DefineChains(vector<TString> &processes, vector<TChain*> &chains)
   if(VERBOSE>0) cout << "- Launch DefineChains()" << endl;
 
   // Define processes
-  // processes.push_back("QCD15");  // ntuples exist but this process is useless for rates
+  // processes.push_back("QCD15");  // actually not needed for rate studies
   processes.push_back("QCD30");     
-  processes.push_back("QCD30ext");  
   processes.push_back("QCD50");     
-  processes.push_back("QCD50ext");  
   processes.push_back("QCD80");     
-  processes.push_back("QCD80ext");  
   processes.push_back("QCD120");    
   processes.push_back("QCD170");    
   processes.push_back("QCD300");    
   processes.push_back("QCD470");    
   //
   processes.push_back("QCDEM15");    
-  processes.push_back("QCDEM15ext"); 
   processes.push_back("QCDEM20");    
   processes.push_back("QCDEM30");    
-  processes.push_back("QCDEM30ext"); 
   processes.push_back("QCDEM50");    
   processes.push_back("QCDEM80");    
   processes.push_back("QCDEM120");   
   //
   processes.push_back("QCDMu15");    
-  processes.push_back("QCDMu15ext"); 
   processes.push_back("QCDMu20");    
   processes.push_back("QCDMu30");    
   processes.push_back("QCDMu50");    
@@ -225,48 +219,41 @@ Int_t DefineChains(vector<TString> &processes, vector<TChain*> &chains)
   // List subdirectories for each process
   map< TString , vector<TString> > subdir;
   //
-  subdir["DYToLL"].push_back("DYToLL_M_1_TuneCUETP8M1_13TeV_pythia8/DYToLL/170224_102942/0000/"); 
-  subdir["WJets" ].push_back("WJetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/WJets/170224_102918/0000/"); 
-  //
-  subdir["QCD15"   ].push_back("QCD_Pt_15to30_TuneCUETP8M1_13TeV_pythia8/QCD15/170224_103523/0000/");  
-  subdir["QCD15"   ].push_back("QCD_Pt_15to30_TuneCUETP8M1_13TeV_pythia8/QCD15/170224_103523/0001/");  
-  subdir["QCD30"   ].push_back("QCD_Pt_30to50_TuneCUETP8M1_13TeV_pythia8/QCD30/170224_103458/0000/");  
-  subdir["QCD30ext"].push_back("QCD_Pt_30to50_TuneCUETP8M1_13TeV_pythia8/QCD30ext/170224_103343/0000/");
-  subdir["QCD30ext"].push_back("QCD_Pt_30to50_TuneCUETP8M1_13TeV_pythia8/QCD30ext/170224_103343/0001/");
-  subdir["QCD50"   ].push_back("QCD_Pt_50to80_TuneCUETP8M1_13TeV_pythia8/QCD50/170224_103316/0000/");  
-  subdir["QCD50ext"].push_back("QCD_Pt_50to80_TuneCUETP8M1_13TeV_pythia8/QCD50ext/170224_103247/0000/");
-  subdir["QCD80"   ].push_back("QCD_Pt_80to120_TuneCUETP8M1_13TeV_pythia8/QCD80/170224_103219/0000/"); 
-  subdir["QCD80ext"].push_back("QCD_Pt_80to120_TuneCUETP8M1_13TeV_pythia8/QCD80ext/170224_103153/0000/");
-  subdir["QCD120"  ].push_back("QCD_Pt_120to170_TuneCUETP8M1_13TeV_pythia8/QCD120/170224_103129/0000/");
-  subdir["QCD170"  ].push_back("QCD_Pt_170to300_TuneCUETP8M1_13TeV_pythia8/QCD170/170224_103102/0000/");
-  subdir["QCD300"  ].push_back("QCD_Pt_300to470_TuneCUETP8M1_13TeV_pythia8/QCD300/170224_103033/0000/");
-  subdir["QCD470"  ].push_back("QCD_Pt_470to600_TuneCUETP8M1_13TeV_pythia8/QCD470/170224_103007/0000/");
-  //
-  subdir["QCDMu15"   ].push_back("QCD_Pt-15to20_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8/QCDMu15/170224_103820/0000/"); 
-  subdir["QCDMu15ext"].push_back("QCD_Pt-15to20_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8/QCDMu15ext/170224_103751/0000/"); 
-  subdir["QCDMu20"   ].push_back("QCD_Pt-20to30_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8/QCDMu20/170224_103727/0000/"); 
-  subdir["QCDMu30"   ].push_back("QCD_Pt-30to50_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8/QCDMu30/170224_103701/0000/"); 
-  subdir["QCDMu50"   ].push_back("QCD_Pt-50to80_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8/QCDMu50/170224_103638/0000/"); 
-  subdir["QCDMu80"   ].push_back("QCD_Pt-80to120_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8/QCDMu80/170224_103614/0000/");
-  subdir["QCDMu120"  ].push_back("QCD_Pt-120to170_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8/QCDMu120/170224_103548/0000/");
-  //
-  subdir["QCDEM15"   ].push_back("QCD_Pt-15to20_EMEnriched_TuneCUETP8M1_13TeV_pythia8/QCDEM15/170224_104144/0000/"); 
-  subdir["QCDEM15ext"].push_back("QCD_Pt-15to20_EMEnriched_TuneCUETP8M1_13TeV_pythia8/QCDEM15ext/170224_104119/0000/"); 
-  subdir["QCDEM20"   ].push_back("QCD_Pt-20to30_EMEnriched_TuneCUETP8M1_13TeV_pythia8/QCDEM20/170224_104055/0000/"); 
-  subdir["QCDEM30"   ].push_back("QCD_Pt-30to50_EMEnriched_TuneCUETP8M1_13TeV_pythia8/QCDEM30/170224_104029/0000/"); 
-  subdir["QCDEM30ext"].push_back("QCD_Pt-30to50_EMEnriched_TuneCUETP8M1_13TeV_pythia8/QCDEM30ext/170224_104004/0000/");
-  subdir["QCDEM50"   ].push_back("QCD_Pt-50to80_EMEnriched_TuneCUETP8M1_13TeV_pythia8/QCDEM50/170224_103936/0000/"); 
-  subdir["QCDEM80"   ].push_back("QCD_Pt-80to120_EMEnriched_TuneCUETP8M1_13TeV_pythia8/QCDEM80/170224_103911/0000/");
-  subdir["QCDEM120"  ].push_back("QCD_Pt-120to170_EMEnriched_TuneCUETP8M1_13TeV_pythia8/QCDEM120/170227_093827/0000/");
+  subdir["DYToLL"].push_back("/DYToLL_M_1_TuneCUETP8M1_13TeV_pythia8/DYToLL/170428_144342/0000/");
+  subdir["WJets" ].push_back("/WJetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/WJets/170428_144318/0000/");
+  subdir["QCD15"   ].push_back("C/QCD_Pt_15to30_TuneCUETP8M1_13TeV_pythia8/QCD15/170502_141753/0000/");
+  subdir["QCD15"   ].push_back("C/QCD_Pt_15to30_TuneCUETP8M1_13TeV_pythia8/QCD15/170502_141753/0001/");
+  subdir["QCD15"   ].push_back("C/QCD_Pt_15to30_TuneCUETP8M1_13TeV_pythia8/QCD15/170502_141753/0002/");
+  subdir["QCD30"   ].push_back("B/QCD_Pt_30to50_TuneCUETP8M1_13TeV_pythia8/QCD30/170428_144919/0000/");
+  subdir["QCD30"   ].push_back("B/QCD_Pt_30to50_TuneCUETP8M1_13TeV_pythia8/QCD30/170428_144919/0001/");
+  subdir["QCD30"   ].push_back("B/QCD_Pt_30to50_TuneCUETP8M1_13TeV_pythia8/QCD30/170428_144919/0002/");
+  subdir["QCD50"   ].push_back("B/QCD_Pt_50to80_TuneCUETP8M1_13TeV_pythia8/QCD50/170428_144852/0000/");
+  subdir["QCD50"   ].push_back("B/QCD_Pt_50to80_TuneCUETP8M1_13TeV_pythia8/QCD50/170428_144852/0001/");
+  subdir["QCD50"   ].push_back("B/QCD_Pt_50to80_TuneCUETP8M1_13TeV_pythia8/QCD50/170428_144852/0002/");
+  subdir["QCD80"   ].push_back("B/QCD_Pt_80to120_TuneCUETP8M1_13TeV_pythia8/QCD80/170428_144824/0000/");
+  subdir["QCD120"  ].push_back("/QCD_Pt_120to170_TuneCUETP8M1_13TeV_pythia8/QCD120/170428_144518/0000/");
+  subdir["QCD170"  ].push_back("/QCD_Pt_170to300_TuneCUETP8M1_13TeV_pythia8/QCD170/170428_144454/0000/");
+  subdir["QCD300"  ].push_back("/QCD_Pt_300to470_TuneCUETP8M1_13TeV_pythia8/QCD300/170428_144431/0000/");
+  subdir["QCD470"  ].push_back("/QCD_Pt_470to600_TuneCUETP8M1_13TeV_pythia8/QCD470/170428_144406/0000/");
+  subdir["QCDMu15" ].push_back("B/QCD_Pt-15to20_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8/QCDMu15/170428_145222/0000/");
+  subdir["QCDMu20" ].push_back("B/QCD_Pt-20to30_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8/QCDMu20/170428_145153/0000/");
+  subdir["QCDMu30" ].push_back("C/QCD_Pt-30to50_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8/QCDMu30/170502_141815/0000/");
+  subdir["QCDMu50" ].push_back("B/QCD_Pt-50to80_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8/QCDMu50/170428_145059/0000/");
+  subdir["QCDMu80" ].push_back("B/QCD_Pt-80to120_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8/QCDMu80/170428_145032/0000/");
+  subdir["QCDMu120"].push_back("B/QCD_Pt-120to170_MuEnrichedPt5_TuneCUETP8M1_13TeV_pythia8/QCDMu120/170428_145009/0000/");
+  subdir["QCDEM15" ].push_back("C/QCD_Pt-15to20_EMEnriched_TuneCUETP8M1_13TeV_pythia8/QCDEM15/170502_141928/0000/");
+  subdir["QCDEM20" ].push_back("B/QCD_Pt-20to30_EMEnriched_TuneCUETP8M1_13TeV_pythia8/QCDEM20/170428_145450/0000/");
+  subdir["QCDEM30" ].push_back("C/QCD_Pt-30to50_EMEnriched_TuneCUETP8M1_13TeV_pythia8/QCDEM30/170502_141901/0000/");
+  subdir["QCDEM50" ].push_back("B/QCD_Pt-50to80_EMEnriched_TuneCUETP8M1_13TeV_pythia8/QCDEM50/170428_145402/0000/");
+  subdir["QCDEM80" ].push_back("B/QCD_Pt-80to120_EMEnriched_TuneCUETP8M1_13TeV_pythia8/QCDEM80/170428_145337/0000/");
+  subdir["QCDEM120"].push_back("B/QCD_Pt-120to170_EMEnriched_TuneCUETP8M1_13TeV_pythia8/QCDEM120/170428_145305/0000/");
 
   // Define paths to root files
-  TString pathEOS1="/eos/cms/store/group/dpg_trigger/comm_trigger/TriggerStudiesGroup/STEAM/Summer16_FlatPU28to62/HLTRates_v4p2_V2_1p35e34_MC_2017feb24A/";
-  TString pathEOS2="/eos/cms/store/group/dpg_trigger/comm_trigger/TriggerStudiesGroup/STEAM/Summer16_FlatPU28to62/HLTRates_v4p2_V2_1p35e34_MC_2017feb24C/";
+  TString pathEOS="/eos/cms/store/group/dpg_trigger/comm_trigger/TriggerStudiesGroup/STEAM/83X_tests/HLTRates_1p25e34_2017apr28";
 
   // Make the chains
   TChain* chTemp;
   TString filePath;
-  TString pathEOS;
   vector<TString> vTemp;
   //
   for(UInt_t iP=0; iP<processes.size(); iP++) { 
@@ -274,20 +261,12 @@ Int_t DefineChains(vector<TString> &processes, vector<TChain*> &chains)
     vTemp  = subdir[processes[iP]];
     chTemp = new TChain("HltTree");
 
-    // QCDEM120 is the only one in pathEOS2 for the set of ntuples being processed here
-    if(processes[iP]=="QCD_Pt-120to170_EMEnriched_TuneCUETP8M1_13TeV_pythia8") {
-      pathEOS = pathEOS2;
-    }
-    else {
-      pathEOS = pathEOS1;
-    }
-
     if(VERBOSE>0) cout << "-- Filling chain for process: " << processes[iP] << endl;
 
     // Loop over subdirectories for process iP and add all root files
     for(UInt_t iS=0; iS<vTemp.size(); iS++) {
 
-      filePath = pathEOS+"/"+vTemp[iS]+"/hltbits_*.root";
+      filePath = pathEOS+vTemp[iS]+"/hltbits_*.root";
 
       chTemp->Add(filePath);
       if(VERBOSE>2) cout << "--- added: " << filePath << endl;
@@ -305,54 +284,33 @@ Int_t DefineChains(vector<TString> &processes, vector<TChain*> &chains)
 Double_t GetXSec(TString process)
 {
 
-  // - generic case: returns xsec * McM efficiency
-  // - particular case: for processes that have an extended dataset,
-  //   add a third factor to reweight wrt #generated events
+  // returns xsec * filter efficiency
 
-  // When processing NTEST events for all processes, 
-  // the third factor is 0.5 as the same #events is used 
-  // in both versions of the dataset
-  if(TEST) {
-    if(     process=="QCDEM15")    return 1279000000.0 *0.0018 *0.5;
-    else if(process=="QCDEM15ext") return 1279000000.0 *0.0018 *0.5;
-    else if(process=="QCDEM30")    return 136000000.0  *0.073  *0.5;
-    else if(process=="QCDEM30ext") return 136000000.0  *0.073  *0.5;
-    else if(process=="QCDMu15")    return 1279000000.0 *0.003  *0.5;
-    else if(process=="QCDMu15ext") return 1279000000.0 *0.003  *0.5;
-  }
-
-  // Generic case (process all events)
-  if(     process=="QCD15")     return 1837410000;
-  else if(process=="QCD30")     return 140932000.*0.2512; 
-  else if(process=="QCD30ext")  return 140932000.*0.7488;
-  else if(process=="QCD50")     return 19204300. *0.2513; 
-  else if(process=="QCD50ext")  return 19204300. *0.7487;
-  else if(process=="QCD80")     return 2762530.  *0.6839; 
-  else if(process=="QCD80ext")  return 2762530   *0.3161;
-  else if(process=="QCD120")    return 471100; 
-  else if(process=="QCD170")    return 117276; 
-  else if(process=="QCD300")    return 7823; 
-  else if(process=="QCD470")    return 648.2; 
+  if(     process=="QCD15")     return 1.706E+09 ;
+  else if(process=="QCD30")     return 1.518E+08 ;
+  else if(process=="QCD50")     return 1.972E+07 ;
+  else if(process=="QCD80")     return 2.734E+06 ;
+  else if(process=="QCD120")    return 4.820E+05 ; 
+  else if(process=="QCD170")    return 1.139E+05 ; 
+  else if(process=="QCD300")    return 8.157E+03 ;
+  else if(process=="QCD470")    return 6.467E+02 ; 
   //
-  else if(process=="QCDEM15")    return 1279000000.0 *0.0018 *0.6969;
-  else if(process=="QCDEM15ext") return 1279000000.0 *0.0018 *0.3031;
-  else if(process=="QCDEM20")    return 557600000.0  *0.0096;
-  else if(process=="QCDEM30")    return 136000000.0  *0.073  *0.4073;
-  else if(process=="QCDEM30ext") return 136000000.0  *0.073  *0.5927;
-  else if(process=="QCDEM50")    return 19800000.0   *0.146;
-  else if(process=="QCDEM80")    return 2800000.0    *0.125;
-  else if(process=="QCDEM120")   return 477000.0     *0.132;
+  else if(process=="QCDEM15")    return 1.270E+09 * 1.099E-03 ;
+  else if(process=="QCDEM20")    return 5.607E+08 * 1.038E-02 ;
+  else if(process=="QCDEM30")    return 1.392E+08 * 5.073E-02 ;
+  else if(process=="QCDEM50")    return 1.930E+07 * 1.103E-01 ;
+  else if(process=="QCDEM80")    return 2.805E+06 * 1.771E-01 ;
+  else if(process=="QCDEM120")   return 4.846E+05 * 1.521E-01 ;
   //
-  else if(process=="QCDMu15")    return 1279000000.0 *0.003  *0.4999;
-  else if(process=="QCDMu15ext") return 1279000000.0 *0.003  *0.5001;
-  else if(process=="QCDMu20")    return 557600000.0  *0.0053;
-  else if(process=="QCDMu30")    return 136000000.0  *0.01182;
-  else if(process=="QCDMu50")    return 19800000.0   *0.02276;
-  else if(process=="QCDMu80")    return 2800000.0    *0.03844;
-  else if(process=="QCDMu120")   return 477000.0     *0.05362;
+  else if(process=="QCDMu15")    return 1.273E+09 * 2.340E-03 ;
+  else if(process=="QCDMu20")    return 5.621E+08 * 6.704E-03 ;
+  else if(process=="QCDMu30")    return 1.392E+08 * 1.131E-02 ;
+  else if(process=="QCDMu50")    return 1.947E+07 * 2.214E-02 ;
+  else if(process=="QCDMu80")    return 2.739E+06 * 4.086E-02 ;
+  else if(process=="QCDMu120")   return 4.754E+05 * 5.033E-02 ;
   //
-  else if(process=="WJets")      return 50700; 
-  else if(process=="DYToLL")     return 20000; 
+  else if(process=="WJets")      return 50700 ;
+  else if(process=="DYToLL")     return 1.887E+04 ; 
 
   else return -1;
 }

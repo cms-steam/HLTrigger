@@ -18,8 +18,14 @@ options.register('doL1Prescales', True, #default value
 options.register('L1PrescaleColumn', 0, #default value
                  VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"")
 
-options.register('nEvents', 0, #default value
+options.register('nEvents', 10, #default value
                  VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.int,"")
+
+options.register('savePSHLT', True, #default value
+                 VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"")
+
+options.register('savePSL1', True, #default value
+                 VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"")
 
 options.parseArguments()
 
@@ -32,10 +38,14 @@ if options.doL1Prescales :
 restart = True
 while(restart):
     for el_idx,el in enumerate(sys.argv):
-        if ("isZeroBias" in el) or ("isMC" in el) or ("doL1Prescales" in el) or ("L1PrescaleColumn" in el) or ("L1Menu" in el) or ("nEvents" in el):
+
+        if ( ("isZeroBias" in el)       or ("isMC" in el)   or ("doL1Prescales" in el) or 
+             ("L1PrescaleColumn" in el) or ("L1Menu" in el) or ("nEvents" in el) or
+             ("savePSHLT" in el) or ("savePSL1" in el) ):
             del sys.argv[el_idx]
             restart = True
             break
+
         restart = False
 
 ###Import the content of hltGetConfiguration
@@ -142,6 +152,7 @@ if options.doL1Prescales :
 
 process.DQMOutput.remove(process.dqmOutput)
 
+# Ntuplizer #
 process.load("HLTrigger.HLTanalyzers.HLTBitAnalyser_cfi")
 process.hltbitanalysis.HLTProcessName = cms.string(process.name_() )
 process.hltbitanalysis.hltresults     = cms.InputTag( 'TriggerResults','',process.name_())
@@ -152,7 +163,9 @@ process.hltbitanalysis.l1jets         = cms.InputTag('hltGtStage2Digis', 'Jet', 
 process.hltbitanalysis.l1taus         = cms.InputTag('hltGtStage2Digis', 'Tau', process.name_())
 process.hltbitanalysis.l1etsums       = cms.InputTag('hltGtStage2Digis', 'EtSum', process.name_())
 process.hltbitanalysis.isL1MuHighQual = cms.bool(True)
-process.hltbitanalysis.RunParameters.HistogramFile = cms.untracked.string('hltbits.root')                           
-process.hltbitanalysis.RunParameters.isData = cms.bool(not options.isMC)
-process.hltbitanalysis.RunParameters.Debug = cms.bool(False)
+process.hltbitanalysis.RunParameters.isData    = cms.bool(not options.isMC)
+process.hltbitanalysis.RunParameters.Debug     = cms.bool(False)
+process.hltbitanalysis.RunParameters.SavePSHLT = cms.bool( options.savePSHLT )
+process.hltbitanalysis.RunParameters.SavePSL1  = cms.bool( options.savePSL1  )
+process.hltbitanalysis.RunParameters.HistogramFile = cms.untracked.string('hltbits.root')
 process.HLTBitAnalysisEndpath = cms.EndPath(process.hltbitanalysis)
