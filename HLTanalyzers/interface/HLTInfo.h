@@ -71,8 +71,6 @@ private:
   // Tree variables
   int L1EvtCnt,HltEvtCnt;
 
-  bool _isL1MuHighQual;
-
   bool *trigflag, *l1flag;
   int *trigPrescl, *l1Prescl; 
 
@@ -110,6 +108,10 @@ private:
   std::string processName_;
 
   bool _Debug;
+  bool _SavePSHLT;
+  bool _SavePSL1;
+  bool _isL1MuHighQual;
+  
 };
 
 template <typename T>

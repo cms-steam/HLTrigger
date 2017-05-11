@@ -23,10 +23,12 @@ hltbitanalysis = cms.EDAnalyzer("HLTBitAnalyzer",
                                 
     ### Run parameters
     RunParameters = cms.PSet(
-        HistogramFile = cms.untracked.string('hltbitanalysis.root'),
+        HistogramFile = cms.untracked.string('hltbits.root'),
         isData        = cms.bool(False),
         Debug         = cms.bool(False),
-        GenTracks     = cms.bool(True)
+        GenTracks     = cms.bool(True),
+        SavePSHLT     = cms.bool(True),
+        SavePSL1      = cms.bool(True)
     )
 
 )

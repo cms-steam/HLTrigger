@@ -10,8 +10,10 @@
 
 HLTInfo::HLTInfo() {
   //set parameter defaults 
-  _Debug=false;
-  _isL1MuHighQual=true;
+  _Debug          = false;
+  _SavePSHLT      = true;
+  _SavePSL1       = true;
+  _isL1MuHighQual = true;
 }
 
 template <class T>
@@ -70,7 +72,9 @@ void HLTInfo::setup(const edm::ParameterSet& pSet, TTree* HltTree) {
   
   for ( std::vector<std::string>::iterator iParam = parameterNames.begin();
         iParam != parameterNames.end(); iParam++ ){
-    if ( (*iParam) == "Debug" ) _Debug =  myHltParams.getParameter<bool>( *iParam );
+    if     ( (*iParam) == "Debug" )     _Debug     =  myHltParams.getParameter<bool>( *iParam );
+    else if( (*iParam) == "SavePSHLT" ) _SavePSHLT =  myHltParams.getParameter<bool>( *iParam );
+    else if( (*iParam) == "SavePSL1"  ) _SavePSL1  =  myHltParams.getParameter<bool>( *iParam );
   }
 
   dummyBranches_ = pSet.getUntrackedParameter<std::vector<std::string> >("dummyBranches",std::vector<std::string>(0));
@@ -135,7 +139,7 @@ void HLTInfo::analyze(const edm::Handle<edm::TriggerResults>      & hltresults,
       for (int itrig = 0; itrig != ntrigs; ++itrig) {
         TString trigName = triggerNames.triggerName(itrig);
         HltTree->Branch(trigName,trigflag+itrig,trigName+"/B");
-        HltTree->Branch(trigName+"_Prescl",trigPrescl+itrig,trigName+"_Prescl/I");
+        if(_SavePSHLT) HltTree->Branch(trigName+"_Prescl",trigPrescl+itrig,trigName+"_Prescl/I");
       }
 
       int itdum = ntrigs;
@@ -148,7 +152,7 @@ void HLTInfo::analyze(const edm::Handle<edm::TriggerResults>      & hltresults,
 	}
 	if(addThisBranch){
 	  HltTree->Branch(trigName,trigflag+itdum,trigName+"/B");
-	  HltTree->Branch(trigName+"_Prescl",trigPrescl+itdum,trigName+"_Prescl/I");
+	  if(_SavePSHLT) HltTree->Branch(trigName+"_Prescl",trigPrescl+itdum,trigName+"_Prescl/I");
 	  trigflag[itdum] = false;
 	  trigPrescl[itdum] = 0;
 	  ++itdum;
@@ -217,7 +221,7 @@ void HLTInfo::analyze(const edm::Handle<edm::TriggerResults>      & hltresults,
 	std::string l1triggername = static_cast<const char *>(algoBitToName[itrig]);
 
 	HltTree->Branch(l1trigName,l1flag+itrig,l1trigName+"/B");
-        HltTree->Branch(l1trigName+"_Prescl",l1Prescl+itrig,l1trigName+"_Prescl/I");
+        if(_SavePSL1) HltTree->Branch(l1trigName+"_Prescl",l1Prescl+itrig,l1trigName+"_Prescl/I");
       } // end algo Map
 
 
