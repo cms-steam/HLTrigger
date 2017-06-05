@@ -27,6 +27,9 @@ options.register('savePSHLT', True, #default value
 options.register('savePSL1', True, #default value
                  VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"")
 
+options.register('UseGenV2', False, 
+                 VarParsing.VarParsing.multiplicity.singleton,VarParsing.VarParsing.varType.bool,"")
+
 options.parseArguments()
 
 print "Am I preparing to run on MC? -> ", options.isMC
@@ -41,7 +44,7 @@ while(restart):
 
         if ( ("isZeroBias" in el)       or ("isMC" in el)   or ("doL1Prescales" in el) or 
              ("L1PrescaleColumn" in el) or ("L1Menu" in el) or ("nEvents" in el) or
-             ("savePSHLT" in el) or ("savePSL1" in el) ):
+             ("savePSHLT" in el) or ("savePSL1" in el) or ("UseGenV2" in el) ):
             del sys.argv[el_idx]
             restart = True
             break
@@ -65,12 +68,13 @@ if not options.isZeroBias and options.isMC :
     # Define the EDFilters
     process.RemovePileUpDominatedEventsGen = cms.EDFilter("RemovePileUpDominatedEventsGen")
 
-    process.RemovePileUpDominatedEventsGenV2 = cms.EDFilter(
-        "RemovePileUpDominatedEventsGenV2",
-        fileListFolder = cms.string("/afs/cern.ch/user/s/sdonato/AFSwork/public/genJetPtHadPU_RunIISummer15GS_ak4GenJetsNoNu"),
-        genJets = cms.InputTag("ak4GenJetsNoNu"),
-        pileupSummaryInfos = cms.InputTag("addPileupInfo"),
-        )
+    if options.UseGenV2:
+        process.RemovePileUpDominatedEventsGenV2 = cms.EDFilter(
+            "RemovePileUpDominatedEventsGenV2",
+            fileListFolder = cms.string("/afs/cern.ch/user/s/sdonato/AFSwork/public/genJetPtHadPU_RunIISummer15GS_ak4GenJetsNoNu"),
+            genJets = cms.InputTag("ak4GenJetsNoNu"),
+            pileupSummaryInfos = cms.InputTag("addPileupInfo"),
+            )
 
     process.RemovePileUpDominatedEvents = cms.EDFilter(
         "RemovePileUpDominatedEvents",
@@ -88,9 +92,10 @@ if not options.isZeroBias and options.isMC :
         process.HLTBeginSequence + process.RemovePileUpDominatedEventsGen + process.HLTEndSequence 
         )
 
-    process.HLT_RemovePileUpDominatedEventsGenV2_v1 = cms.Path( 
-        process.HLTBeginSequence + process.RemovePileUpDominatedEventsGenV2 + process.HLTEndSequence 
-        )
+    if options.UseGenV2:
+        process.HLT_RemovePileUpDominatedEventsGenV2_v1 = cms.Path( 
+            process.HLTBeginSequence + process.RemovePileUpDominatedEventsGenV2 + process.HLTEndSequence 
+            )
 
     process.HLT_RemovePileUpDominatedEvents_v1 = cms.Path( 
         process.HLTBeginSequence + process.RemovePileUpDominatedEvents + process.HLTEndSequence 
